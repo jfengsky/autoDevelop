@@ -556,16 +556,16 @@ var Search = function (_Component) {
   }
 
   _createClass(Search, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       return _react2.default.createElement(
-        'form',
-        { className: 'navbar-form navbar-right' },
+        "form",
+        { className: "navbar-form navbar-right" },
         _react2.default.createElement(
-          'div',
-          { className: 'form-search search-only' },
-          _react2.default.createElement('i', { className: 'search-icon glyphicon glyphicon-search' }),
-          _react2.default.createElement('input', { type: 'text', className: 'form-control search-query' })
+          "div",
+          { className: "form-search search-only" },
+          _react2.default.createElement("i", { className: "search-icon glyphicon glyphicon-search" }),
+          _react2.default.createElement("input", { type: "text", className: "form-control search-query" })
         )
       );
     }
