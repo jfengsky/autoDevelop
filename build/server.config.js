@@ -3,6 +3,6 @@
  */
 
 export const serverEntry = {
-  server: './client/index.js',
+  server: './server/index.js',
 }
 export const serverPort = 3300
