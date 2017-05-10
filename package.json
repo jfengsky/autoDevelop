@@ -1,0 +1,58 @@
+{
+  "name": "tps",
+  "version": "1.0.0",
+  "description": "my development",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run startServer & npm run startClient",
+    "startServer": "npm run watchServer & npm run server",
+    "startClient": "npm run watch & npm run watchClient & npm run client",
+    "server": "node-dev dist/server.js",
+    "client": "node-dev dist/client.js",
+    "debugger": "DEBUG=anna:* npm start",
+    "watch": "webpack --config build/webpack.config.babel.js --progress --colors --watch",
+    "watchClient": "webpack --config build/webpack.config.client.babel.js --progress --colors --watch",
+    "watchServer": "webpack --config build/webpack.config.server.babel.js --progress --colors --watch",
+    "prettier-code": "lint-staged"
+  },
+  "lint-staged": {
+    "linters": {
+      "src/**/*.js": [
+        "prettier-standard",
+        "git add"
+      ],
+      "build/**/*.js": [
+        "prettier-standard",
+        "git add"
+      ]
+    }
+  },
+  "pre-commit": [
+    "prettier-code"
+  ],
+  "dependencies": {
+    "express": "~4.15.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-latest": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-register": "^6.24.0",
+    "express-react-views": "^0.10.2",
+    "lint-staged": "^3.4.0",
+    "pre-commit": "^1.2.2",
+    "prettier-standard": "^1.0.6",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.4",
+    "react-router": "^4.0.0",
+    "react-router-dom": "^4.1.1",
+    "react-router-redux": "^4.0.8",
+    "redux": "^3.6.0",
+    "webpack": "^2.3.2",
+    "webpack-node-externals": "^1.6.0"
+  }
+}
