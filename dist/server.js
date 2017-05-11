@@ -284,6 +284,7 @@ app.use('/static', _express2.default.static('./dist'));
 app.use('/static', _express2.default.static('./node_modules'));
 
 app.get('*', function (req, res) {
+  console.log(req);
   var context = {};
   var html = _server2.default.renderToString(_react2.default.createElement(
     _reactRedux.Provider,
@@ -386,6 +387,8 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _fetch = __webpack_require__(24);
+
 var _Select = __webpack_require__(18);
 
 var _Select2 = _interopRequireDefault(_Select);
@@ -404,9 +407,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import {FETCH_SAVE_PAGETYPE} from '../../store/fetch'
-
-
 var EditPageType = function (_Component) {
   _inherits(EditPageType, _Component);
 
@@ -419,26 +419,38 @@ var EditPageType = function (_Component) {
 
     _this.createPageType = function () {
       var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(e) {
-        var value;
+        var value, result;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                value = _this.refs.pageTypeInput.value.trim();
-                // if (value) {
-                //   let result = await FETCH_SAVE_PAGETYPE({
-                //     type: 'save',
-                //     text: value
-                //   })
-                //   // TODO
-                //   console.log(result)
-                // } else {
-                //   this.setState({
-                //     typeError: true
-                //   })
-                // }
+                value = _this.refs.pageTypeInput.refs.pageTypeValue.value.trim();
 
-              case 1:
+                if (!value) {
+                  _context.next = 8;
+                  break;
+                }
+
+                _context.next = 4;
+                return (0, _fetch.FETCH_SAVE_PAGETYPE)({
+                  type: 'save',
+                  text: value
+                });
+
+              case 4:
+                result = _context.sent;
+
+                // TODO
+                console.log(result);
+                _context.next = 9;
+                break;
+
+              case 8:
+                _this.setState({
+                  typeError: true
+                });
+
+              case 9:
               case 'end':
                 return _context.stop();
             }
@@ -498,7 +510,7 @@ var EditPageType = function (_Component) {
                 _react2.default.createElement(
                   'div',
                   { className: 'col-xs-10' },
-                  _react2.default.createElement(_InputText2.default, { error: typeError })
+                  _react2.default.createElement(_InputText2.default, { ref: 'pageTypeInput', error: typeError })
                 ),
                 _react2.default.createElement(
                   'div',
@@ -650,11 +662,7 @@ var InputText = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'form-group ' + (error ? ' has-error has-feedback' : '') },
-        _react2.default.createElement('input', {
-          type: 'text',
-          className: 'form-control',
-          placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B'
-        }),
+        _react2.default.createElement('input', { type: 'text', ref: 'pageTypeValue', className: 'form-control', placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B' }),
         _react2.default.createElement('span', {
           className: 'glyphicon glyphicon-remove form-control-feedback',
           style: { right: 10, display: error ? '' : 'none' }
@@ -1196,6 +1204,66 @@ module.exports = require("babel-runtime/regenerator");
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FETCH_SAVE_PAGETYPE = undefined;
+
+var _regenerator = __webpack_require__(22);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var headers = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json'
+};
+
+// 页面类型接口
+var pagetType = '/pageType';
+
+// 页面类型一些接口
+var FETCH_SAVE_PAGETYPE = exports.FETCH_SAVE_PAGETYPE = function () {
+  var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(data) {
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return fetch(pagetType, {
+              method: 'post',
+              headers: headers,
+              body: JSON.stringify(data)
+            }).then(function (response) {
+              return response.json();
+            });
+
+          case 2:
+            return _context.abrupt('return', _context.sent);
+
+          case 3:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, undefined);
+  }));
+
+  return function FETCH_SAVE_PAGETYPE(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
 
 /***/ })
 /******/ ]);

@@ -14,7 +14,12 @@ export default class InputText extends Component {
     let {error} = this.props
     return (
       <div className={`form-group ${error ? ' has-error has-feedback' : ''}`}>
-        <input type="text" className="form-control" placeholder="请输入页面类型" />
+        <input
+          type="text"
+          ref="pageTypeValue"
+          className="form-control"
+          placeholder="请输入页面类型"
+        />
         <span
           className="glyphicon glyphicon-remove form-control-feedback"
           style={{right: 10, display: error ? '' : 'none'}}

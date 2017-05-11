@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 10);
+/******/ 	return __webpack_require__(__webpack_require__.s = 12);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,16 +76,28 @@ module.exports = require("react");
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-redux");
+module.exports = require("express");
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-router-dom");
+module.exports = require("babel-runtime/regenerator");
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-redux");
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router-dom");
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -104,7 +116,8 @@ var clientEntry = exports.clientEntry = {
 var clientPort = exports.clientPort = 3200;
 
 /***/ }),
-/* 4 */
+/* 6 */,
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -118,21 +131,21 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(2);
+var _reactRouterDom = __webpack_require__(4);
 
-var _Menu = __webpack_require__(17);
+var _Menu = __webpack_require__(19);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _Home = __webpack_require__(13);
+var _Home = __webpack_require__(15);
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _Api = __webpack_require__(11);
+var _Api = __webpack_require__(13);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _Modify = __webpack_require__(15);
+var _Modify = __webpack_require__(17);
 
 var _Modify2 = _interopRequireDefault(_Modify);
 
@@ -152,7 +165,7 @@ var App = function App(props) {
 exports.default = App;
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -164,7 +177,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = {};
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -179,25 +192,19 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = require("express");
-
-/***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-router");
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -207,29 +214,31 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(8);
+var _server = __webpack_require__(10);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouter = __webpack_require__(9);
+var _reactRouter = __webpack_require__(11);
 
-var _express = __webpack_require__(7);
+var _express = __webpack_require__(1);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _layout = __webpack_require__(6);
+var _layout = __webpack_require__(9);
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _App = __webpack_require__(4);
+var _App = __webpack_require__(7);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _initialState = __webpack_require__(5);
+var _initialState = __webpack_require__(8);
 
 var _initialState2 = _interopRequireDefault(_initialState);
 
-var _client = __webpack_require__(3);
+var _client = __webpack_require__(5);
+
+var _api = __webpack_require__(24);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -238,7 +247,21 @@ app.use('/static', _express2.default.static('./dist'));
 app.use('/static', _express2.default.static('./node_modules'));
 
 app.get('*', function (req, res) {
-  res.send((0, _layout2.default)({ title: 'client', content: '', __INITSTATE__: _initialState2.default }));
+  if (_api.pageList.indexOf(req.path) >= 0) {
+    res.send((0, _layout2.default)({ title: 'client', content: '', __INITSTATE__: _initialState2.default }));
+  } else {
+    res.sendStatus('404');
+  }
+});
+
+app.post('*', function (req, res) {
+
+  if (_api.apiList.indexOf(req.path) >= 0) {
+    // todo switch接口
+    res.sendStatus('200');
+  } else {
+    res.sendStatus('404');
+  }
 });
 
 app.listen(_client.clientPort, function () {
@@ -246,7 +269,7 @@ app.listen(_client.clientPort, function () {
 });
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -264,7 +287,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(1);
+var _reactRedux = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -305,7 +328,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Api);
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -315,7 +338,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(20);
+var _regenerator = __webpack_require__(2);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -325,11 +348,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Select = __webpack_require__(16);
+var _fetch = __webpack_require__(22);
+
+var _Select = __webpack_require__(18);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _InputText = __webpack_require__(14);
+var _InputText = __webpack_require__(16);
 
 var _InputText2 = _interopRequireDefault(_InputText);
 
@@ -343,9 +368,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import {FETCH_SAVE_PAGETYPE} from '../../store/fetch'
-
-
 var EditPageType = function (_Component) {
   _inherits(EditPageType, _Component);
 
@@ -358,26 +380,38 @@ var EditPageType = function (_Component) {
 
     _this.createPageType = function () {
       var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(e) {
-        var value;
+        var value, result;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                value = _this.refs.pageTypeInput.value.trim();
-                // if (value) {
-                //   let result = await FETCH_SAVE_PAGETYPE({
-                //     type: 'save',
-                //     text: value
-                //   })
-                //   // TODO
-                //   console.log(result)
-                // } else {
-                //   this.setState({
-                //     typeError: true
-                //   })
-                // }
+                value = _this.refs.pageTypeInput.refs.pageTypeValue.value.trim();
 
-              case 1:
+                if (!value) {
+                  _context.next = 8;
+                  break;
+                }
+
+                _context.next = 4;
+                return (0, _fetch.FETCH_SAVE_PAGETYPE)({
+                  type: 'save',
+                  text: value
+                });
+
+              case 4:
+                result = _context.sent;
+
+                // TODO
+                console.log(result);
+                _context.next = 9;
+                break;
+
+              case 8:
+                _this.setState({
+                  typeError: true
+                });
+
+              case 9:
               case 'end':
                 return _context.stop();
             }
@@ -437,7 +471,7 @@ var EditPageType = function (_Component) {
                 _react2.default.createElement(
                   'div',
                   { className: 'col-xs-10' },
-                  _react2.default.createElement(_InputText2.default, { error: typeError })
+                  _react2.default.createElement(_InputText2.default, { ref: 'pageTypeInput', error: typeError })
                 ),
                 _react2.default.createElement(
                   'div',
@@ -487,7 +521,7 @@ EditPageType.propTypes = {};
 exports.default = EditPageType;
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -503,7 +537,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(1);
+var _reactRedux = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -541,7 +575,7 @@ Home.propTypes = {};
 exports.default = Home;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -589,11 +623,7 @@ var InputText = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'form-group ' + (error ? ' has-error has-feedback' : '') },
-        _react2.default.createElement('input', {
-          type: 'text',
-          className: 'form-control',
-          placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B'
-        }),
+        _react2.default.createElement('input', { type: 'text', ref: 'pageTypeValue', className: 'form-control', placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B' }),
         _react2.default.createElement('span', {
           className: 'glyphicon glyphicon-remove form-control-feedback',
           style: { right: 10, display: error ? '' : 'none' }
@@ -611,7 +641,7 @@ exports.default = InputText;
 InputText.propTypes = {};
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -663,7 +693,7 @@ Modify.propTypes = {};
 exports.default = Modify;
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -858,7 +888,7 @@ Select.propTypes = {};
 exports.default = Select;
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -874,13 +904,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(2);
+var _reactRouterDom = __webpack_require__(4);
 
-var _Search = __webpack_require__(18);
+var _Search = __webpack_require__(20);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _modal = __webpack_require__(19);
+var _modal = __webpack_require__(21);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -1024,7 +1054,7 @@ var Menu = function (_Component) {
 exports.default = Menu;
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1082,7 +1112,7 @@ exports.default = Search;
 Search.propTypes = {};
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1096,11 +1126,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(21);
+var _reactDom = __webpack_require__(23);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _EditPageType = __webpack_require__(12);
+var _EditPageType = __webpack_require__(14);
 
 var _EditPageType2 = _interopRequireDefault(_EditPageType);
 
@@ -1125,16 +1155,96 @@ var modal = function modal(props) {
 exports.default = modal;
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports) {
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("babel-runtime/regenerator");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FETCH_SAVE_PAGETYPE = undefined;
+
+var _regenerator = __webpack_require__(2);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var headers = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json'
+};
+
+// 页面类型接口
+var pagetType = '/pageType';
+
+// 页面类型一些接口
+var FETCH_SAVE_PAGETYPE = exports.FETCH_SAVE_PAGETYPE = function () {
+  var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(data) {
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return fetch(pagetType, {
+              method: 'post',
+              headers: headers,
+              body: JSON.stringify(data)
+            }).then(function (response) {
+              return response.json();
+            });
+
+          case 2:
+            return _context.abrupt('return', _context.sent);
+
+          case 3:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, undefined);
+  }));
+
+  return function FETCH_SAVE_PAGETYPE(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * 所有接口
+ */
+
+// 页面路由地址
+var home = exports.home = '/';
+var api = exports.api = '/api';
+var modify = exports.modify = '/modify';
+// export const favIco = '/favicon.ico'
+
+// 接口路由地址
+var pageType = exports.pageType = '/pageType';
+
+var pageList = exports.pageList = [home, api, modify];
+var apiList = exports.apiList = [pageType];
 
 /***/ })
 /******/ ]);
