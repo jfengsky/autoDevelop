@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,28 +76,22 @@ module.exports = require("react");
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("babel-runtime/regenerator");
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("babel-runtime/regenerator");
+module.exports = require("react-redux");
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-redux");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
 module.exports = require("react-router-dom");
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -116,7 +110,67 @@ var clientEntry = exports.clientEntry = {
 var clientPort = exports.clientPort = 3200;
 
 /***/ }),
-/* 6 */,
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * 所有接口
+ */
+
+// 页面路由地址
+var home = exports.home = '/';
+var api = exports.api = '/api';
+var modify = exports.modify = '/modify';
+// export const favIco = '/favicon.ico'
+
+// 接口路由地址
+var pageType = exports.pageType = '/pageType';
+
+var pageList = exports.pageList = [home, api, modify];
+var apiList = exports.apiList = [pageType];
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _pageType = __webpack_require__(17);
+
+var _pageType2 = _interopRequireDefault(_pageType);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (req) {
+  var _req$body = req.body,
+      type = _req$body.type,
+      text = _req$body.text;
+
+  switch (type) {
+    case 'save':
+      return _pageType2.default.save({
+        name: text
+      }).then(function (_data) {
+        console.log(_data);
+        return _data;
+      });
+    default:
+      break;
+  }
+};
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -131,21 +185,21 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(4);
+var _reactRouterDom = __webpack_require__(3);
 
-var _Menu = __webpack_require__(19);
+var _Menu = __webpack_require__(24);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _Home = __webpack_require__(15);
+var _Home = __webpack_require__(20);
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _Api = __webpack_require__(13);
+var _Api = __webpack_require__(18);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _Modify = __webpack_require__(17);
+var _Modify = __webpack_require__(22);
 
 var _Modify2 = _interopRequireDefault(_Modify);
 
@@ -195,34 +249,64 @@ exports.default = function (props) {
 /* 10 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-dom/server");
+module.exports = require("body-parser");
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-router");
+module.exports = require("express");
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports) {
+
+module.exports = require("multer");
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-dom/server");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router");
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+var _regenerator = __webpack_require__(1);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(10);
+var _server = __webpack_require__(13);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouter = __webpack_require__(11);
+var _reactRouter = __webpack_require__(14);
 
-var _express = __webpack_require__(1);
+var _express = __webpack_require__(11);
 
 var _express2 = _interopRequireDefault(_express);
+
+var _bodyParser = __webpack_require__(10);
+
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
+var _multer = __webpack_require__(12);
+
+var _multer2 = _interopRequireDefault(_multer);
 
 var _layout = __webpack_require__(9);
 
@@ -236,13 +320,24 @@ var _initialState = __webpack_require__(8);
 
 var _initialState2 = _interopRequireDefault(_initialState);
 
-var _client = __webpack_require__(5);
+var _client = __webpack_require__(4);
 
-var _api = __webpack_require__(24);
+var _pageType = __webpack_require__(6);
+
+var _pageType2 = _interopRequireDefault(_pageType);
+
+var _api = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 var app = (0, _express2.default)();
+var upload = (0, _multer2.default)();
+
+app.use(_bodyParser2.default.json());
+app.use(_bodyParser2.default.urlencoded({ extended: true }));
+
 app.use('/static', _express2.default.static('./dist'));
 app.use('/static', _express2.default.static('./node_modules'));
 
@@ -254,22 +349,128 @@ app.get('*', function (req, res) {
   }
 });
 
-app.post('*', function (req, res) {
+// 通用成功返回默认信息
+var successData = { state: 0, data: null };
 
-  if (_api.apiList.indexOf(req.path) >= 0) {
-    // todo switch接口
-    res.sendStatus('200');
-  } else {
-    res.sendStatus('404');
-  }
-});
+app.post('*', function () {
+  var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(req, res) {
+    var sendData;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            if (!(_api.apiList.indexOf(req.path) >= 0)) {
+              _context.next = 13;
+              break;
+            }
+
+            // todo switch接口
+            sendData = {};
+            _context.t0 = req.path;
+            _context.next = _context.t0 === _api.pageType ? 5 : 10;
+            break;
+
+          case 5:
+            _context.next = 7;
+            return (0, _pageType2.default)(req);
+
+          case 7:
+            sendData = _context.sent;
+
+            res.send(Object.assign({}, successData, sendData));
+            return _context.abrupt('break', 11);
+
+          case 10:
+            return _context.abrupt('break', 11);
+
+          case 11:
+            _context.next = 14;
+            break;
+
+          case 13:
+            res.sendStatus('404');
+
+          case 14:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, undefined);
+  }));
+
+  return function (_x, _x2) {
+    return _ref.apply(this, arguments);
+  };
+}());
 
 app.listen(_client.clientPort, function () {
   return console.log('start client: http://localhost:' + _client.clientPort);
 });
 
 /***/ }),
-/* 13 */
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.URL = exports.MongoClient = undefined;
+
+var _mongodb = __webpack_require__(28);
+
+var _mongodb2 = _interopRequireDefault(_mongodb);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var MongoClient = exports.MongoClient = _mongodb2.default.MongoClient;
+var URL = exports.URL = 'mongodb://localhost:27017/autoDevelopData';
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _dbConfig = __webpack_require__(16);
+
+var colName = 'pageType';
+
+exports.default = {
+  save: function save(_ref) {
+    var name = _ref.name;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        // TODO
+        var collection = db.collection(colName);
+        var id = 0;
+        // 实现自增id，查询最后一个，然后把id+1
+        collection.find({}).toArray(function (searchErr, result) {
+          // console.log(result)
+          if (result.length) {
+            id = result[result.length - 1].id + 1;
+          }
+
+          collection.insert({ name: name, id: id }, function (inerr, docs) {
+            resolve(docs);
+            db.close();
+          });
+        });
+      });
+    });
+  }
+};
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -287,7 +488,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(3);
+var _reactRedux = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -328,7 +529,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Api);
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -338,7 +539,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -348,13 +549,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _fetch = __webpack_require__(22);
+var _fetch = __webpack_require__(27);
 
-var _Select = __webpack_require__(18);
+var _Select = __webpack_require__(23);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _InputText = __webpack_require__(16);
+var _InputText = __webpack_require__(21);
 
 var _InputText2 = _interopRequireDefault(_InputText);
 
@@ -521,7 +722,7 @@ EditPageType.propTypes = {};
 exports.default = EditPageType;
 
 /***/ }),
-/* 15 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -537,7 +738,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(3);
+var _reactRedux = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -575,7 +776,7 @@ Home.propTypes = {};
 exports.default = Home;
 
 /***/ }),
-/* 16 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -623,7 +824,12 @@ var InputText = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'form-group ' + (error ? ' has-error has-feedback' : '') },
-        _react2.default.createElement('input', { type: 'text', ref: 'pageTypeValue', className: 'form-control', placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B' }),
+        _react2.default.createElement('input', {
+          type: 'text',
+          ref: 'pageTypeValue',
+          className: 'form-control',
+          placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B'
+        }),
         _react2.default.createElement('span', {
           className: 'glyphicon glyphicon-remove form-control-feedback',
           style: { right: 10, display: error ? '' : 'none' }
@@ -641,7 +847,7 @@ exports.default = InputText;
 InputText.propTypes = {};
 
 /***/ }),
-/* 17 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -693,7 +899,7 @@ Modify.propTypes = {};
 exports.default = Modify;
 
 /***/ }),
-/* 18 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -888,7 +1094,7 @@ Select.propTypes = {};
 exports.default = Select;
 
 /***/ }),
-/* 19 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -904,13 +1110,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(4);
+var _reactRouterDom = __webpack_require__(3);
 
-var _Search = __webpack_require__(20);
+var _Search = __webpack_require__(25);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _modal = __webpack_require__(21);
+var _modal = __webpack_require__(26);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -1054,7 +1260,7 @@ var Menu = function (_Component) {
 exports.default = Menu;
 
 /***/ }),
-/* 20 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1112,7 +1318,7 @@ exports.default = Search;
 Search.propTypes = {};
 
 /***/ }),
-/* 21 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1126,11 +1332,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(23);
+var _reactDom = __webpack_require__(29);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _EditPageType = __webpack_require__(14);
+var _EditPageType = __webpack_require__(19);
 
 var _EditPageType2 = _interopRequireDefault(_EditPageType);
 
@@ -1155,7 +1361,7 @@ var modal = function modal(props) {
 exports.default = modal;
 
 /***/ }),
-/* 22 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1166,7 +1372,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FETCH_SAVE_PAGETYPE = undefined;
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -1215,36 +1421,16 @@ var FETCH_SAVE_PAGETYPE = exports.FETCH_SAVE_PAGETYPE = function () {
 }();
 
 /***/ }),
-/* 23 */
+/* 28 */
+/***/ (function(module, exports) {
+
+module.exports = require("mongodb");
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/**
- * 所有接口
- */
-
-// 页面路由地址
-var home = exports.home = '/';
-var api = exports.api = '/api';
-var modify = exports.modify = '/modify';
-// export const favIco = '/favicon.ico'
-
-// 接口路由地址
-var pageType = exports.pageType = '/pageType';
-
-var pageList = exports.pageList = [home, api, modify];
-var apiList = exports.apiList = [pageType];
 
 /***/ })
 /******/ ]);

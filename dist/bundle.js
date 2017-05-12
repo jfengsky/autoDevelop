@@ -12396,7 +12396,12 @@ var InputText = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'form-group ' + (error ? ' has-error has-feedback' : '') },
-        _react2.default.createElement('input', { type: 'text', ref: 'pageTypeValue', className: 'form-control', placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B' }),
+        _react2.default.createElement('input', {
+          type: 'text',
+          ref: 'pageTypeValue',
+          className: 'form-control',
+          placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B'
+        }),
         _react2.default.createElement('span', {
           className: 'glyphicon glyphicon-remove form-control-feedback',
           style: { right: 10, display: error ? '' : 'none' }
