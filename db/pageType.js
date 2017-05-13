@@ -15,12 +15,26 @@ export default {
           if (result.length) {
             id = result[result.length - 1].id + 1
           }
-
-          collection.insert({ name, id }, (inerr, docs) => {
+          collection.insert({ name, id, time: new Date().getTime() }, (inerr, docs) => {
             resolve(docs)
             db.close()
           })
+        })
+      })
+    })
+  },
 
+  search() {
+    return new Promise( (resolve,reject) => {
+      MongoClient.connect(URL, (err, db) => {
+        const collection = db.collection(colName)
+        collection.find({}).toArray((searchErr, result) => {
+          if (searchErr) {
+            reject(`search error`)
+          } else {
+            resolve(result)
+          }
+          db.close()
         })
       })
     })

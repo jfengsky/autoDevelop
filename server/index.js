@@ -17,7 +17,6 @@ app.use('/static', express.static('./dist'))
 app.use('/static', express.static('./node_modules'))
 
 app.get('*', (req, res) => {
-  console.log(req)
   const context = {}
   const html = ReactDOMServer.renderToString(
     <Provider store={store}>

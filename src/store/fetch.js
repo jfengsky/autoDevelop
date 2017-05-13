@@ -7,7 +7,14 @@ const headers = {
 const pagetType = '/pageType'
 
 // 页面类型一些接口
-export const FETCH_SAVE_PAGETYPE = async data => {
+/**
+ * 
+ * data: {
+      type: 'save',  'search' 'delete', 'modify'
+      text: ''
+    }
+ */
+export const FETCH_PAGETYPE = async data => {
   return await fetch(pagetType, {
     method: 'post',
     headers: headers,

@@ -5,16 +5,22 @@ export default req => {
     type,
     text
   } = req.body
-  switch(type){
+  switch (type) {
     case 'save':
-    return DB.save({
-      name:text
-    }).then( _data => {
-      console.log(_data)
-      return _data
-    })
+      return DB.save({
+        name: text
+      }).then(_data => {
+        return {
+          data: _data.ops[0]
+        }
+      })
+    case 'search':
+      return DB.search().then( _data => {
+        return {
+          data: _data
+        }
+      })
     default:
-    break
+      break
   }
-
 }

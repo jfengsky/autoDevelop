@@ -16,7 +16,14 @@ const modal = props => {
   closeModal()
   container = document.createElement('div')
   document.body.appendChild(container)
-  ReactDOM.render(<EditPageType close={closeModal} />, container)
+  ReactDOM.render(
+    <EditPageType
+      close={closeModal}
+      pageTypeList={props.pageTypeList}
+      addPageType={props.addPageType}
+    />,
+    container,
+  )
 }
 
 export default modal

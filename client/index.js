@@ -27,7 +27,15 @@ app.use('/static', express.static('./dist'))
 app.use('/static', express.static('./node_modules'))
 
 app.get('*', (req, res) => {
-  if (pageList.indexOf(req.path) >= 0) {
+  let hasMatchUrl = false
+  pageList.filter(item => {
+    if(item === '/'){
+      hasMatchUrl = true
+    } else if( req.path.indexOf(item + '/') >= 0){
+      hasMatchUrl = true
+    }
+  })
+  if (hasMatchUrl) {
     res.send(layout({ title: 'client', content: '', __INITSTATE__: initialState }))
   } else {
     res.sendStatus('404')

@@ -10,6 +10,7 @@ const App = props => (
   <div className="main" style={{paddingLeft: 10, paddingRight: 10}}>
     <Menu />
     <Route exact path="/" component={Home} />
+    <Route path="/home" component={Home} />
     <Route path="/api" component={Api} />
     <Route path="/modify" component={Modify} />
   </div>

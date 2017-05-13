@@ -1,10 +1,26 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import Search from './Search';
 import modal from '../../container/modal';
 
-export default class Menu extends Component {
+import {add_pageType} from '../../action/pageType';
+
+/*const PageInfo = ({ match }) => {
+  return (
+    <ul className="dropdown-menu">
+      <li>
+        <Link to={`${match.url}/createPage`}>创建页面</Link>
+        </li>
+      <li>
+        <Link to={`${match.url}/pageTypeModify`}>编辑页面类型</Link>
+      </li>
+    </ul>
+  )
+}*/
+
+class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,12 +45,9 @@ export default class Menu extends Component {
             >
               <Link to="/">首页<b className="caret" /></Link>
               <ul className="dropdown-menu">
-                <li><a href="javascript:void(0)">创建页面</a></li>
+                <li><a href="/home/createPage">创建页面</a></li>
                 <li>
-                  <a
-                    onClick={this.handleClickPageType}
-                    href="javascript:void(0)"
-                  >
+                  <a href="/home/pageTypeModify">
                     编辑页面类型
                   </a>
                 </li>
@@ -75,7 +88,23 @@ export default class Menu extends Component {
     });
   };
 
-  handleClickPageType = e => {
-    modal({type: 'editPageType'});
-  };
+  // handleClickPageType = e => {
+  //   modal({type: 'editPageType', pageTypeList: this.props.pageTypeList, addPageType: this.props.addPageType})
+  // }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...state,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addPageType: value => {
+      dispatch(add_pageType(value));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

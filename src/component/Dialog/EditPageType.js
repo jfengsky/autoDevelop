@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 
-import {FETCH_SAVE_PAGETYPE} from '../../store/fetch';
+import {FETCH_PAGETYPE} from '../../store/fetch';
 import Select from '../Select';
 import InputText from '../InputText';
 
@@ -14,6 +14,7 @@ class EditPageType extends Component {
 
   render() {
     let {typeError} = this.state;
+    let {pageTypeList} = this.props;
     return (
       <div className="modal" style={{display: 'block'}}>
         <div className="modal-dialog">
@@ -46,7 +47,7 @@ class EditPageType extends Component {
               </div>
               <div className="row" style={{marginTop: 10}}>
                 <div className="col-xs-10">
-                  <Select />
+                  <Select data={pageTypeList} />
                 </div>
                 <div className="col-xs-2">
                   <button type="button" className="btn btn-danger">删除</button>
@@ -63,12 +64,19 @@ class EditPageType extends Component {
   createPageType = async e => {
     let value = this.refs.pageTypeInput.refs.pageTypeValue.value.trim();
     if (value) {
-      let result = await FETCH_SAVE_PAGETYPE({
+      let {
+        data: {
+          id,
+          name,
+        },
+      } = await FETCH_PAGETYPE({
         type: 'save',
         text: value,
       });
-      // TODO
-      console.log(result);
+      this.props.addPageType({
+        id,
+        name,
+      });
     } else {
       this.setState({
         typeError: true,
