@@ -5,7 +5,37 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import {FETCH_PAGETYPE} from '../store/fetch'
 import {updata_pageType} from '../action/pageType'
 
-class Home extends Component {
+const CreatePage = ({match}) => {
+  return <div>{match.params.pagetype}</div>
+}
+
+const ModifyPage = ({match}) => {
+  return <div>modify</div>
+}
+
+const routes = [
+  {
+    path: '/createPage',
+    component: CreatePage,
+  },
+  {
+    path: '/modifyPage',
+    component: ModifyPage,
+  },
+]
+
+const Home = ({match}) => {
+  return (
+    <div>
+      <Route path={`${match.url}/:pagetype`} component={CreatePage} />
+      <Route exact path={match.url} render={() => <h3>Home2</h3>} />
+    </div>
+  )
+}
+
+export default Home
+
+/*class Home extends Component {
   componentDidMount() {
     // 异步获取页面类型
     FETCH_PAGETYPE({
@@ -40,4 +70,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)*/

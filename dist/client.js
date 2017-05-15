@@ -86,6 +86,12 @@ module.exports = require("react-redux");
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router-dom");
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -112,7 +118,7 @@ var updata_pageType = exports.updata_pageType = function updata_pageType(value) 
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -177,12 +183,6 @@ var FETCH_PAGETYPE = exports.FETCH_PAGETYPE = function () {
     return _ref.apply(this, arguments);
   };
 }();
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-router-dom");
 
 /***/ }),
 /* 6 */
@@ -288,7 +288,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(5);
+var _reactRouterDom = __webpack_require__(3);
 
 var _Menu = __webpack_require__(26);
 
@@ -678,7 +678,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _fetch = __webpack_require__(4);
+var _fetch = __webpack_require__(5);
 
 var _Select = __webpack_require__(25);
 
@@ -868,84 +868,103 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(2);
 
-var _reactRouterDom = __webpack_require__(5);
+var _reactRouterDom = __webpack_require__(3);
 
-var _fetch = __webpack_require__(4);
+var _fetch = __webpack_require__(5);
 
-var _pageType = __webpack_require__(3);
+var _pageType = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var CreatePage = function CreatePage(_ref) {
+  var match = _ref.match;
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+  return _react2.default.createElement(
+    'div',
+    null,
+    match.params.pagetype
+  );
+};
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var ModifyPage = function ModifyPage(_ref2) {
+  var match = _ref2.match;
 
-var Home = function (_Component) {
-  _inherits(Home, _Component);
+  return _react2.default.createElement(
+    'div',
+    null,
+    'modify'
+  );
+};
 
-  function Home() {
-    _classCallCheck(this, Home);
+var routes = [{
+  path: '/createPage',
+  component: CreatePage
+}, {
+  path: '/modifyPage',
+  component: ModifyPage
+}];
 
-    return _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));
-  }
+var Home = function Home(_ref3) {
+  var match = _ref3.match;
 
-  _createClass(Home, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      // 异步获取页面类型
-      (0, _fetch.FETCH_PAGETYPE)({
-        type: 'search'
-      }).then(function (data) {
-        _this2.props.updataPageType(data.data);
-      });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:pagetype', component: CreatePage }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: match.url, render: function render() {
+        return _react2.default.createElement(
           'h3',
           null,
-          'home'
-        )
-      );
-    }
-  }]);
-
-  return Home;
-}(_react.Component);
-
-Home.propTypes = {};
-
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-  return _extends({}, state);
+          'Home2'
+        );
+      } })
+  );
 };
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+exports.default = Home;
+
+/*class Home extends Component {
+  componentDidMount() {
+    // 异步获取页面类型
+    FETCH_PAGETYPE({
+      type: 'search',
+    }).then(data => {
+      this.props.updataPageType(data.data)
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <h3>home</h3>
+      </div>
+    )
+  }
+}
+
+Home.propTypes = {}
+
+const mapStateToProps = (state, ownProps) => {
   return {
-    updataPageType: function updataPageType(data) {
-      dispatch((0, _pageType.updata_pageType)(data));
-    }
-  };
-};
+    ...state,
+  }
+}
 
-exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Home);
+const mapDispatchToProps = dispatch => {
+  return {
+    updataPageType: data => {
+      dispatch(updata_pageType(data))
+    },
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)*/
 
 /***/ }),
 /* 23 */
@@ -1205,7 +1224,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(5);
+var _reactRouterDom = __webpack_require__(3);
 
 var _reactRedux = __webpack_require__(2);
 
@@ -1217,7 +1236,7 @@ var _modal = __webpack_require__(28);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _pageType = __webpack_require__(3);
+var _pageType = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1332,9 +1351,7 @@ var Menu = function (_Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    {
-                      href: '/home/pageTypeModify'
-                    },
+                    { href: '/home/pageTypeModify' },
                     '\u7F16\u8F91\u9875\u9762\u7C7B\u578B'
                   )
                 )
@@ -1479,7 +1496,11 @@ var modal = function modal(props) {
   closeModal();
   container = document.createElement('div');
   document.body.appendChild(container);
-  _reactDom2.default.render(_react2.default.createElement(_EditPageType2.default, { close: closeModal, pageTypeList: props.pageTypeList, addPageType: props.addPageType }), container);
+  _reactDom2.default.render(_react2.default.createElement(_EditPageType2.default, {
+    close: closeModal,
+    pageTypeList: props.pageTypeList,
+    addPageType: props.addPageType
+  }), container);
 };
 
 exports.default = modal;
