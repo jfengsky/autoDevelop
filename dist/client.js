@@ -102,6 +102,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var ADD_PAGETYPE = exports.ADD_PAGETYPE = 'ADD_PAGETYPE';
 var UPDATA_PAGETYPE = exports.UPDATA_PAGETYPE = 'UPDATA_PAGETYPE';
+var DELETE_PAGETYPE = exports.DELETE_PAGETYPE = 'DELETE_PAGETYPE';
 
 var add_pageType = exports.add_pageType = function add_pageType(value) {
   return {
@@ -113,6 +114,13 @@ var add_pageType = exports.add_pageType = function add_pageType(value) {
 var updata_pageType = exports.updata_pageType = function updata_pageType(value) {
   return {
     type: UPDATA_PAGETYPE,
+    value: value
+  };
+};
+
+var delete_pageType = exports.delete_pageType = function delete_pageType(value) {
+  return {
+    type: DELETE_PAGETYPE,
     value: value
   };
 };
@@ -251,7 +259,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = function (req) {
   var _req$body = req.body,
       type = _req$body.type,
-      text = _req$body.text;
+      text = _req$body.text,
+      id = _req$body.id;
 
   switch (type) {
     case 'save':
@@ -264,6 +273,12 @@ exports.default = function (req) {
       });
     case 'search':
       return _pageType2.default.search().then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+    case 'delete':
+      return _pageType2.default.delete({ id: id }).then(function (_data) {
         return {
           data: _data
         };
@@ -534,7 +549,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.URL = exports.MongoClient = undefined;
 
-var _mongodb = __webpack_require__(29);
+var _mongodb = __webpack_require__(30);
 
 var _mongodb2 = _interopRequireDefault(_mongodb);
 
@@ -588,6 +603,23 @@ exports.default = {
         collection.find({}).toArray(function (searchErr, result) {
           if (searchErr) {
             reject('search error');
+          } else {
+            resolve(result);
+          }
+          db.close();
+        });
+      });
+    });
+  },
+  delete: function _delete(_ref2) {
+    var id = _ref2.id;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        collection.remove({ id: id }, function (delErr, result) {
+          if (delErr) {
+            reject('delete pageType error');
           } else {
             resolve(result);
           }
@@ -872,51 +904,48 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(2);
-
 var _reactRouterDom = __webpack_require__(3);
 
-var _fetch = __webpack_require__(5);
+var _CreatePage = __webpack_require__(28);
 
-var _pageType = __webpack_require__(4);
+var _CreatePage2 = _interopRequireDefault(_CreatePage);
+
+var _Modify = __webpack_require__(32);
+
+var _Modify2 = _interopRequireDefault(_Modify);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CreatePage = function CreatePage(_ref) {
+// import {FETCH_PAGETYPE} from '../store/fetch'
+// import {updata_pageType} from '../action/pageType'
+
+var pageTypeSwitch = function pageTypeSwitch(match) {
+  switch (match.params.pagetype) {
+    case 'createPage':
+      return _react2.default.createElement(_CreatePage2.default, null);
+    case 'pageTypeModify':
+      return _react2.default.createElement(_Modify2.default, null);
+    default:
+      return _react2.default.createElement(
+        'div',
+        null,
+        'default'
+      );
+  }
+};
+// import {connect} from 'react-redux'
+
+
+var Home = function Home(_ref) {
   var match = _ref.match;
 
   return _react2.default.createElement(
     'div',
     null,
-    match.params.pagetype
-  );
-};
-
-var ModifyPage = function ModifyPage(_ref2) {
-  var match = _ref2.match;
-
-  return _react2.default.createElement(
-    'div',
-    null,
-    'modify'
-  );
-};
-
-var routes = [{
-  path: '/createPage',
-  component: CreatePage
-}, {
-  path: '/modifyPage',
-  component: ModifyPage
-}];
-
-var Home = function Home(_ref3) {
-  var match = _ref3.match;
-
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:pagetype', component: CreatePage }),
+    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:pagetype', render: function render(_ref2) {
+        var match = _ref2.match;
+        return pageTypeSwitch(match);
+      } }),
     _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: match.url, render: function render() {
         return _react2.default.createElement(
           'h3',
@@ -1232,7 +1261,7 @@ var _Search = __webpack_require__(27);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _modal = __webpack_require__(28);
+var _modal = __webpack_require__(29);
 
 var _modal2 = _interopRequireDefault(_modal);
 
@@ -1469,11 +1498,63 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(30);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreagePage = function (_Component) {
+  _inherits(CreagePage, _Component);
+
+  function CreagePage() {
+    _classCallCheck(this, CreagePage);
+
+    return _possibleConstructorReturn(this, (CreagePage.__proto__ || Object.getPrototypeOf(CreagePage)).apply(this, arguments));
+  }
+
+  _createClass(CreagePage, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        'creage page test'
+      );
+    }
+  }]);
+
+  return CreagePage;
+}(_react.Component);
+
+CreagePage.propTypes = {};
+
+exports.default = CreagePage;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(31);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1506,16 +1587,295 @@ var modal = function modal(props) {
 exports.default = modal;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = __webpack_require__(1);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(2);
+
+var _fetch = __webpack_require__(5);
+
+var _pageType = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ModifyPageType = function (_Component) {
+  _inherits(ModifyPageType, _Component);
+
+  function ModifyPageType(props) {
+    var _this2 = this;
+
+    _classCallCheck(this, ModifyPageType);
+
+    var _this = _possibleConstructorReturn(this, (ModifyPageType.__proto__ || Object.getPrototypeOf(ModifyPageType)).call(this, props));
+
+    _this.handlerChangePageType = function (e) {
+      _this.setState({
+        selectValue: e.target.value - 0
+      });
+    };
+
+    _this.handlerFocus = function (e) {
+      _this.setState({
+        errorMessage: ''
+      });
+    };
+
+    _this.createPageType = function () {
+      var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(e) {
+        var value, _ref2, _ref2$data, id, name;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                value = _this.refs.pageTypeInput.value.trim();
+
+                if (!value) {
+                  _context.next = 11;
+                  break;
+                }
+
+                _context.next = 4;
+                return (0, _fetch.FETCH_PAGETYPE)({
+                  type: 'save',
+                  text: value
+                });
+
+              case 4:
+                _ref2 = _context.sent;
+                _ref2$data = _ref2.data;
+                id = _ref2$data.id;
+                name = _ref2$data.name;
+
+                // 偷懒 直接刷新 没去更新state
+                window.location.reload();
+                // this.props.addPageType({
+                //   id,
+                //   name,
+                // });
+                _context.next = 12;
+                break;
+
+              case 11:
+                _this.setState({
+                  errorMessage: '请输入页面类型'
+                });
+
+              case 12:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    _this.deletePageType = function () {
+      var _ref3 = _asyncToGenerator(_regenerator2.default.mark(function _callee2(e) {
+        var id, _ref4, state, data;
+
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                id = _this.state.selectValue;
+                _context2.next = 3;
+                return (0, _fetch.FETCH_PAGETYPE)({
+                  type: 'delete',
+                  id: id
+                });
+
+              case 3:
+                _ref4 = _context2.sent;
+                state = _ref4.state;
+                data = _ref4.data;
+
+                if (!state && data.ok === 1) {
+
+                  // 偷懒 直接刷新
+                  window.location.reload();
+
+                  // this.props.deletePageType({
+                  //   value: id
+                  // })
+                }
+
+              case 7:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, _this2);
+      }));
+
+      return function (_x2) {
+        return _ref3.apply(this, arguments);
+      };
+    }();
+
+    _this.state = {
+      selectValue: 0,
+      errorMessage: ''
+    };
+    return _this;
+  }
+
+  _createClass(ModifyPageType, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      (0, _fetch.FETCH_PAGETYPE)({
+        type: 'search'
+      }).then(function (data) {
+        _this3.props.updataPageType(data.data);
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h5',
+          { className: 'modal-title' },
+          '\u7F16\u8F91\u9875\u9762\u7C7B\u578B'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-10' },
+            _react2.default.createElement('input', { type: 'text', ref: 'pageTypeInput', className: 'form-control', onFocus: this.handlerFocus, placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u7C7B\u578B' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-2' },
+            _react2.default.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-success',
+                onClick: this.createPageType
+              },
+              '\u521B\u5EFA'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-10' },
+            _react2.default.createElement(
+              'select',
+              { className: 'form-control', onChange: this.handlerChangePageType, value: this.state.selectValue },
+              this.props.pageTypeList.map(function (_ref5) {
+                var name = _ref5.name,
+                    id = _ref5.id;
+                return _react2.default.createElement(
+                  'option',
+                  { key: id, value: id },
+                  name
+                );
+              })
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-2' },
+            _react2.default.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-danger',
+                onClick: this.deletePageType
+              },
+              '\u5220\u9664'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-10', style: { display: this.state.errorMessage ? 'block' : 'none' } },
+            _react2.default.createElement(
+              'div',
+              { className: 'alert alert-danger', role: 'alert' },
+              this.state.errorMessage
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return ModifyPageType;
+}(_react.Component);
+
+ModifyPageType.propTypes = {};
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+  return _extends({}, state);
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    updataPageType: function updataPageType(data) {
+      dispatch((0, _pageType.updata_pageType)(data));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ModifyPageType);
 
 /***/ })
 /******/ ]);

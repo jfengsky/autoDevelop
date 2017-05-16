@@ -1,6 +1,10 @@
 import initialState from '../store/initialState'
 
-import {ADD_PAGETYPE, UPDATA_PAGETYPE} from '../action/pageType'
+import {
+  ADD_PAGETYPE,
+  UPDATA_PAGETYPE,
+  DELETE_PAGETYPE,
+} from '../action/pageType'
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -17,6 +21,12 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, {
         pageTypeList: [...action.value],
       })
+    case DELETE_PAGETYPE:
+      return state
+    // Object.assign({}, {
+    //   ...state,
+    //   pageTypeList: []
+    // })
     default:
       return state
   }

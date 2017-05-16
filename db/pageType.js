@@ -38,5 +38,21 @@ export default {
         })
       })
     })
+  },
+
+  delete({id}) {
+    return new Promise((resolve,reject) => {
+      MongoClient.connect(URL, (err, db) => {
+        const collection = db.collection(colName)
+        collection.remove({id}, (delErr, result) => {
+          if(delErr){
+              reject(`delete pageType error`)
+          } else {
+              resolve(result)
+          }
+          db.close()
+        })
+      })
+    })
   }
 }

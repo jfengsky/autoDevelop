@@ -3,7 +3,8 @@ import DB from '../db/pageType'
 export default req => {
   let {
     type,
-    text
+    text,
+    id
   } = req.body
   switch (type) {
     case 'save':
@@ -16,6 +17,12 @@ export default req => {
       })
     case 'search':
       return DB.search().then( _data => {
+        return {
+          data: _data
+        }
+      })
+    case 'delete':
+      return DB.delete({id}).then( _data => {
         return {
           data: _data
         }
