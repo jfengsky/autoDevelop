@@ -13,6 +13,7 @@ export const modify = '/modify'
 // 接口路由地址
 export const pageType = '/pageType'
 
+export const pageInfo = '/pageInfo'
 
 export const pageList = [index, home, api, modify]
-export const apiList = [pageType]
+export const apiList = [pageType, pageInfo]

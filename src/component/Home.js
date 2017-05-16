@@ -7,65 +7,58 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 
 import CreatePage from './pageType/CreatePage'
 import ModifyPageType from './pageType/Modify'
+import PageList from './pageLis'
+
+// const pageTypeSwitch = match => {
+//   switch (match.params.pagetype) {
+//     case 'createPage':
+//       return <CreatePage />
+//     case 'pageTypeModify':
+//       return <ModifyPageType />
+//     default:
+//       return <div>default</div>
+//   }
+// }
 
 const pageTypeSwitch = match => {
-  switch (match.params.pagetype) {
-    case 'createPage':
-      return <CreatePage />
-    case 'pageTypeModify':
-      return <ModifyPageType />
-    default:
-      return <div>default</div>
+  return <CreatePage id={match.params.id} />
+}
+
+const CreatePageSplit = ({match}) => {
+  let pageComponent = CreatePage
+  if (match.params.pagetype === 'pageTypeModify') {
+    pageComponent = ModifyPageType
   }
+  return (
+    <div>
+      <Route exact path={match.url} component={pageComponent} />
+      <Route
+        path={`${match.url}/:id`}
+        render={({match}) => pageTypeSwitch(match)}
+      />
+    </div>
+  )
 }
 
 const Home = ({match}) => {
   return (
     <div>
-      <Route
-        path={`${match.url}/:pagetype`}
-        render={({match}) => pageTypeSwitch(match)}
-      />
-      <Route exact path={match.url} render={() => <h3>Home2</h3>} />
+      <Route exact path={match.url} component={PageList} />
+      <Route path={`${match.url}/:pagetype`} component={CreatePageSplit} />
     </div>
   )
 }
 
+/*const Home = ({match}) => {
+  return (
+    <div>
+      <Route exact path={match.url} component={PageList} />
+      <Route
+        path={`${match.url}/:pagetype`}
+        render={({match}) => pageTypeSwitch(match)}
+      />
+    </div>
+  )
+}*/
+
 export default Home
-
-/*class Home extends Component {
-  componentDidMount() {
-    // 异步获取页面类型
-    FETCH_PAGETYPE({
-      type: 'search',
-    }).then(data => {
-      this.props.updataPageType(data.data)
-    })
-  }
-
-  render() {
-    return (
-      <div>
-        <h3>home</h3>
-      </div>
-    )
-  }
-}
-
-Home.propTypes = {}
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    ...state,
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    updataPageType: data => {
-      dispatch(updata_pageType(data))
-    },
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home)*/

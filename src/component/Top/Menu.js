@@ -5,20 +5,9 @@ import {connect} from 'react-redux';
 import Search from './Search';
 import modal from '../../container/modal';
 
-import {add_pageType} from '../../action/pageType';
+import {add_pageType, updata_pageType} from '../../action/pageType';
 
-/*const PageInfo = ({ match }) => {
-  return (
-    <ul className="dropdown-menu">
-      <li>
-        <Link to={`${match.url}/createPage`}>创建页面</Link>
-        </li>
-      <li>
-        <Link to={`${match.url}/pageTypeModify`}>编辑页面类型</Link>
-      </li>
-    </ul>
-  )
-}*/
+import {FETCH_PAGETYPE} from '../../store/fetch';
 
 class Menu extends Component {
   constructor(props) {
@@ -31,6 +20,15 @@ class Menu extends Component {
       },
     };
   }
+
+  componentDidMount() {
+    FETCH_PAGETYPE({
+      type: 'search',
+    }).then(data => {
+      this.props.updataPageType(data.data);
+    });
+  }
+
   render() {
     return (
       <div className="navbar navbar-inverse">
@@ -87,10 +85,6 @@ class Menu extends Component {
       nav,
     });
   };
-
-  // handleClickPageType = e => {
-  //   modal({type: 'editPageType', pageTypeList: this.props.pageTypeList, addPageType: this.props.addPageType})
-  // }
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -101,8 +95,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addPageType: value => {
-      dispatch(add_pageType(value));
+    // addPageType: value => {
+    //   dispatch(add_pageType(value));
+    // },
+    updataPageType: data => {
+      dispatch(updata_pageType(data));
     },
   };
 };

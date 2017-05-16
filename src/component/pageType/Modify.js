@@ -3,25 +3,38 @@ import {connect} from 'react-redux';
 
 import {FETCH_PAGETYPE} from '../../store/fetch';
 
-import {updata_pageType, delete_pageType} from '../../action/pageType';
+// import {updata_pageType, delete_pageType} from '../../action/pageType'
 
 class ModifyPageType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectValue: 0,
+      select: null,
       errorMessage: '',
     };
   }
-  componentDidMount() {
-    FETCH_PAGETYPE({
-      type: 'search',
-    }).then(data => {
-      this.props.updataPageType(data.data);
-    });
-  }
+  // componentDidMount() {
+  //   FETCH_PAGETYPE({
+  //     type: 'search',
+  //   }).then(data => {
+  //     this.props.updataPageType(data.data);
+  //   })
+  // }
 
   render() {
+    let {
+      pageTypeList,
+    } = this.props;
+    let {
+      select,
+    } = this.state;
+    let selectValue = 0;
+    if (pageTypeList[0]) {
+      selectValue = pageTypeList[0].id;
+    }
+    if (select != null) {
+      selectValue = select;
+    }
     return (
       <div>
         <h5 className="modal-title">编辑页面类型</h5>
@@ -50,7 +63,8 @@ class ModifyPageType extends Component {
             <select
               className="form-control"
               onChange={this.handlerChangePageType}
-              value={this.state.selectValue}
+              value={selectValue}
+              ref="pageTypeSelect"
             >
               {this.props.pageTypeList.map(({name, id}) => (
                 <option key={id} value={id}>{name}</option>
@@ -83,7 +97,7 @@ class ModifyPageType extends Component {
 
   handlerChangePageType = e => {
     this.setState({
-      selectValue: e.target.value - 0,
+      select: e.target.value - 0,
     });
   };
 
@@ -119,7 +133,7 @@ class ModifyPageType extends Component {
   };
 
   deletePageType = async e => {
-    let id = this.state.selectValue;
+    let id = this.refs.pageTypeSelect.value - 0;
     let {
       state,
       data,
@@ -130,10 +144,6 @@ class ModifyPageType extends Component {
     if (!state && data.ok === 1) {
       // 偷懒 直接刷新
       window.location.reload();
-
-      // this.props.deletePageType({
-      //   value: id
-      // })
     }
   };
 }
@@ -142,15 +152,15 @@ ModifyPageType.propTypes = {};
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    ...state,
+    pageTypeList: state.pageTypeList,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    updataPageType: data => {
-      dispatch(updata_pageType(data));
-    },
+    // updataPageType: data => {
+    //   dispatch(updata_pageType(data));
+    // },
     // deletePageType: data => {
     //   dispatch(delete_pageType(data))
     // }

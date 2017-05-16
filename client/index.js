@@ -10,11 +10,13 @@ import initialState from '../src/store/initialState'
 import { clientPort } from '../build/client.config'
 
 import pageTypeRoute from '../routes/pageType'
+import pageInfoRoute from '../routes/pageInfo'
 
 import {
   pageList,
   apiList,
-  pageType
+  pageType,
+  pageInfo
 } from '../routes/api'
 
 const app = express()
@@ -24,6 +26,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/static', express.static('./dist'))
+app.use(express.static('./public'))
 app.use('/static', express.static('./node_modules'))
 
 app.get('*', (req, res) => {
@@ -54,6 +57,10 @@ app.post('*', async (req, res) => {
         sendData = await pageTypeRoute(req)
         res.send(Object.assign({},successData, sendData))
         break;
+      case pageInfo:
+        sendData = await pageInfoRoute(req)
+        res.send(Object.assign({},successData, sendData))
+        break
       default:
         break;
     }
