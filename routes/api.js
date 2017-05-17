@@ -15,5 +15,7 @@ export const pageType = '/pageType'
 
 export const pageInfo = '/pageInfo'
 
+export const apiInfo = '/apiInfo'
+
 export const pageList = [index, home, api, modify]
-export const apiList = [pageType, pageInfo]
+export const apiList = [apiInfo, pageType, pageInfo]

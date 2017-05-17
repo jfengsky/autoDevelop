@@ -88,7 +88,7 @@ module.exports = require("babel-runtime/regenerator");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FETCH_PAGEINFO = exports.FETCH_PAGETYPE = undefined;
+exports.FETCH_APIINFO = exports.FETCH_PAGEINFO = exports.FETCH_PAGETYPE = undefined;
 
 var _regenerator = __webpack_require__(1);
 
@@ -145,7 +145,6 @@ var FETCH_PAGETYPE = exports.FETCH_PAGETYPE = function () {
 }();
 
 // 页面代码一些借口
-
 var FETCH_PAGEINFO = exports.FETCH_PAGEINFO = function () {
   var _ref2 = _asyncToGenerator(_regenerator2.default.mark(function _callee2(data) {
     return _regenerator2.default.wrap(function _callee2$(_context2) {
@@ -174,6 +173,37 @@ var FETCH_PAGEINFO = exports.FETCH_PAGEINFO = function () {
 
   return function FETCH_PAGEINFO(_x2) {
     return _ref2.apply(this, arguments);
+  };
+}();
+
+var FETCH_APIINFO = exports.FETCH_APIINFO = function () {
+  var _ref3 = _asyncToGenerator(_regenerator2.default.mark(function _callee3(data) {
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return fetch(_api.apiInfo, {
+              method: 'post',
+              headers: headers,
+              body: JSON.stringify(data)
+            }).then(function (response) {
+              return response.json();
+            });
+
+          case 2:
+            return _context3.abrupt('return', _context3.sent);
+
+          case 3:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, undefined);
+  }));
+
+  return function FETCH_APIINFO(_x3) {
+    return _ref3.apply(this, arguments);
   };
 }();
 
@@ -216,8 +246,10 @@ var pageType = exports.pageType = '/pageType';
 
 var pageInfo = exports.pageInfo = '/pageInfo';
 
+var apiInfo = exports.apiInfo = '/apiInfo';
+
 var pageList = exports.pageList = [index, home, api, modify];
-var apiList = exports.apiList = [pageType, pageInfo];
+var apiList = exports.apiList = [apiInfo, pageType, pageInfo];
 
 /***/ }),
 /* 6 */
@@ -373,6 +405,7 @@ exports.default = function (req) {
         };
       }());
     case 'updata':
+      // TODO
       return _fsPageInfo2.default.write({
         name: name,
         code: code
@@ -384,7 +417,6 @@ exports.default = function (req) {
                 case 0:
                   _context3.next = 2;
                   return _pageInfo2.default.updata({
-                    name: name,
                     kind: kind,
                     desc: desc,
                     id: id
@@ -630,6 +662,10 @@ var _pageInfo = __webpack_require__(8);
 
 var _pageInfo2 = _interopRequireDefault(_pageInfo);
 
+var _apiInfo = __webpack_require__(42);
+
+var _apiInfo2 = _interopRequireDefault(_apiInfo);
+
 var _api = __webpack_require__(5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -673,14 +709,14 @@ app.post('*', function () {
         switch (_context.prev = _context.next) {
           case 0:
             if (!(_api.apiList.indexOf(req.path) >= 0)) {
-              _context.next = 18;
+              _context.next = 23;
               break;
             }
 
             // todo switch接口
             sendData = {};
             _context.t0 = req.path;
-            _context.next = _context.t0 === _api.pageType ? 5 : _context.t0 === _api.pageInfo ? 10 : 15;
+            _context.next = _context.t0 === _api.pageType ? 5 : _context.t0 === _api.pageInfo ? 10 : _context.t0 === _api.apiInfo ? 15 : 20;
             break;
 
           case 5:
@@ -691,7 +727,7 @@ app.post('*', function () {
             sendData = _context.sent;
 
             res.send(Object.assign({}, successData, sendData));
-            return _context.abrupt('break', 16);
+            return _context.abrupt('break', 21);
 
           case 10:
             _context.next = 12;
@@ -701,19 +737,29 @@ app.post('*', function () {
             sendData = _context.sent;
 
             res.send(Object.assign({}, successData, sendData));
-            return _context.abrupt('break', 16);
+            return _context.abrupt('break', 21);
 
           case 15:
-            return _context.abrupt('break', 16);
+            _context.next = 17;
+            return (0, _apiInfo2.default)(req);
 
-          case 16:
-            _context.next = 19;
+          case 17:
+            sendData = _context.sent;
+
+            res.send(Object.assign({}, successData, sendData));
+            return _context.abrupt('break', 21);
+
+          case 20:
+            return _context.abrupt('break', 21);
+
+          case 21:
+            _context.next = 24;
             break;
 
-          case 18:
+          case 23:
             res.sendStatus('404');
 
-          case 19:
+          case 24:
           case 'end':
             return _context.stop();
         }
@@ -842,19 +888,28 @@ exports.default = {
   },
   updata: function updata(_ref3) {
     var id = _ref3.id,
-        name = _ref3.name,
         kind = _ref3.kind,
         desc = _ref3.desc;
 
     return new Promise(function (resolve, reject) {
       _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
         var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        // 不用$set则更新整条数据
+        collection.update(where, { $set: { kind: kind, desc: desc } }, function (inerr, docs) {
+          resolve(docs);
+          db.close();
+        });
       });
     });
   },
   delete: function _delete(_ref4) {
     var id = _ref4.id;
 
+    // TODO
     return new Promise(function (resolve, reject) {
       _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
         var collection = db.collection(colName);
@@ -989,53 +1044,52 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = __webpack_require__(4);
+
 var _reactRedux = __webpack_require__(3);
+
+var _ApiList = __webpack_require__(40);
+
+var _ApiList2 = _interopRequireDefault(_ApiList);
+
+var _CreateApi = __webpack_require__(39);
+
+var _CreateApi2 = _interopRequireDefault(_CreateApi);
+
+var _ApiModify = __webpack_require__(41);
+
+var _ApiModify2 = _interopRequireDefault(_ApiModify);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var RouterApi = function RouterApi(_ref) {
+  var match = _ref.match;
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Api = function (_Component) {
-  _inherits(Api, _Component);
-
-  function Api() {
-    _classCallCheck(this, Api);
-
-    return _possibleConstructorReturn(this, (Api.__proto__ || Object.getPrototypeOf(Api)).apply(this, arguments));
+  switch (match.params.type) {
+    case 'apiTypeModify':
+      return _react2.default.createElement(_ApiModify2.default, null);
+    default:
+      return _react2.default.createElement(_CreateApi2.default, null);
   }
+};
 
-  _createClass(Api, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'Api2'
-      );
-    }
-  }]);
-
-  return Api;
-}(_react.Component);
+var Api = function Api(_ref2) {
+  var match = _ref2.match;
+  return _react2.default.createElement(
+    _reactRouterDom.Switch,
+    null,
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: match.url, component: _ApiList2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:type', component: RouterApi })
+  );
+};
 
 Api.propTypes = {};
 
-var mapStateToProps = function mapStateToProps(state, ownProps) {
-  return _extends({}, state);
-};
-exports.default = (0, _reactRedux.connect)(mapStateToProps)(Api);
+exports.default = Api;
 
 /***/ }),
 /* 24 */
@@ -1696,12 +1750,38 @@ var Menu = function (_Component) {
             ),
             _react2.default.createElement(
               'li',
-              null,
+              {
+                className: '' + (this.state.nav.apiListSlide ? 'dropdown open' : 'dropup'),
+                onMouseEnter: this.handleMouseEnter.bind(this, 'api'),
+                onMouseLeave: this.handleMouseLeave.bind(this, 'api')
+              },
               _react2.default.createElement(
                 _reactRouterDom.Link,
                 { to: '/api' },
                 '\u63A5\u53E3',
                 _react2.default.createElement('b', { className: 'caret' })
+              ),
+              _react2.default.createElement(
+                'ul',
+                { className: 'dropdown-menu' },
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { href: '/api/createApi' },
+                    '\u521B\u5EFA\u63A5\u53E3'
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { href: '/api/apiTypeModify' },
+                    '\u7F16\u8F91\u63A5\u53E3\u7C7B\u578B'
+                  )
+                )
               )
             ),
             _react2.default.createElement(
@@ -2690,6 +2770,666 @@ module.exports = require("path");
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreateApi = function (_Component) {
+  _inherits(CreateApi, _Component);
+
+  function CreateApi() {
+    _classCallCheck(this, CreateApi);
+
+    return _possibleConstructorReturn(this, (CreateApi.__proto__ || Object.getPrototypeOf(CreateApi)).apply(this, arguments));
+  }
+
+  _createClass(CreateApi, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        'create api test'
+      );
+    }
+  }]);
+
+  return CreateApi;
+}(_react.Component);
+
+CreateApi.propTypes = {};
+
+exports.default = CreateApi;
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ApiList = function (_Component) {
+  _inherits(ApiList, _Component);
+
+  function ApiList() {
+    _classCallCheck(this, ApiList);
+
+    return _possibleConstructorReturn(this, (ApiList.__proto__ || Object.getPrototypeOf(ApiList)).apply(this, arguments));
+  }
+
+  _createClass(ApiList, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        'Api list modify'
+      );
+    }
+  }]);
+
+  return ApiList;
+}(_react.Component);
+
+ApiList.propTypes = {};
+
+exports.default = ApiList;
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(3);
+
+var _ApiTypeList = __webpack_require__(44);
+
+var _ApiTypeList2 = _interopRequireDefault(_ApiTypeList);
+
+var _fetch = __webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreateApiType = function (_Component) {
+  _inherits(CreateApiType, _Component);
+
+  function CreateApiType(props) {
+    _classCallCheck(this, CreateApiType);
+
+    var _this = _possibleConstructorReturn(this, (CreateApiType.__proto__ || Object.getPrototypeOf(CreateApiType)).call(this, props));
+
+    _this.apiModify = function (_ref) {
+      var name = _ref.name,
+          method = _ref.method,
+          kind = _ref.kind,
+          id = _ref.id;
+
+      _this.setState({
+        name: name,
+        method: method,
+        type: kind,
+        isUpdata: true,
+        id: id
+      });
+    };
+
+    _this.handlerClickCreageApiType = function (e) {
+      var _this$state = _this.state,
+          name = _this$state.name,
+          type = _this$state.type,
+          method = _this$state.method,
+          id = _this$state.id;
+
+
+      var modifyType = 'save';
+      if (id >= 0) {
+        modifyType = 'update';
+      }
+
+      if (!name) {
+        _this.setState({
+          errorMessage: '输入api路径'
+        });
+      } else {
+        (0, _fetch.FETCH_APIINFO)({
+          type: modifyType,
+          method: method,
+          name: name,
+          kind: type,
+          id: id
+        }).then(function (_data) {
+          window.reload();
+        });
+      }
+    };
+
+    _this.state = {
+      name: '',
+      isUpdata: false,
+      type: 0,
+      method: 'post',
+      errorMessage: ''
+    };
+    return _this;
+  }
+
+  _createClass(CreateApiType, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var _state = this.state,
+          name = _state.name,
+          isUpdata = _state.isUpdata,
+          type = _state.type,
+          method = _state.method;
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h5',
+          { className: 'modal-title' },
+          '\u521B\u5EFA\u63A5\u53E3\u7C7B\u578B'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement('input', {
+              type: 'text',
+              className: 'form-control',
+              placeholder: '\u8BF7\u8F93\u5165\u63A5\u8DEF\u5F84',
+              value: name,
+              onChange: function onChange(e) {
+                _this2.setState({ name: e.target.value });
+              },
+              readOnly: isUpdata ? true : false
+            })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement(
+              'label',
+              null,
+              _react2.default.createElement('input', { type: 'radio', name: 'optionsRadios', value: 'post', checked: method === 'post' ? true : false, onChange: function onChange(e) {
+                  _this2.setState({ method: e.target.value });
+                } }),
+              ' POST'
+            ),
+            _react2.default.createElement(
+              'label',
+              { style: { marginLeft: 10 } },
+              _react2.default.createElement('input', { type: 'radio', name: 'optionsRadios', value: 'get', checked: method === 'get' ? true : false, onChange: function onChange(e) {
+                  _this2.setState({ method: e.target.value });
+                } }),
+              ' GET'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement(
+              'select',
+              {
+                className: 'form-control',
+                onChange: function onChange(e) {
+                  _this2.setState({ type: e.target.value });
+                },
+                value: type
+              },
+              this.props.pageTypeList.map(function (_ref2) {
+                var name = _ref2.name,
+                    id = _ref2.id;
+                return _react2.default.createElement(
+                  'option',
+                  { key: id, value: id },
+                  name
+                );
+              })
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            !isUpdata && _react2.default.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: this.handlerClickCreageApiType
+              },
+              '\u521B\u5EFA'
+            ),
+            isUpdata && _react2.default.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: this.handlerClickCreageApiType
+              },
+              '\u7F16\u8F91'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            {
+              className: 'col-xs-12',
+              style: { display: this.state.errorMessage ? 'block' : 'none' }
+            },
+            _react2.default.createElement(
+              'div',
+              { className: 'alert alert-danger', role: 'alert' },
+              this.state.errorMessage
+            )
+          )
+        ),
+        _react2.default.createElement(_ApiTypeList2.default, { apiModify: this.apiModify, pageTypeList: this.props.pageTypeList })
+      );
+    }
+  }]);
+
+  return CreateApiType;
+}(_react.Component);
+
+CreateApiType.propTypes = {};
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+  return _extends({}, state);
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(CreateApiType);
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _apiInfo = __webpack_require__(43);
+
+var _apiInfo2 = _interopRequireDefault(_apiInfo);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (req) {
+  var _req$body = req.body,
+      type = _req$body.type,
+      name = _req$body.name,
+      method = _req$body.method,
+      kind = _req$body.kind,
+      id = _req$body.id;
+
+  switch (type) {
+    case 'save':
+      return _apiInfo2.default.save({ name: name, method: method, kind: kind }).then(function (_data) {
+        return {
+          data: _data.ops[0]
+        };
+      });
+    case 'search':
+      return _apiInfo2.default.search({ id: id }).then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+    case 'update':
+      return _apiInfo2.default.update({ id: id, method: method, kind: kind }).then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+  }
+};
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _dbConfig = __webpack_require__(6);
+
+var colName = 'apiInfo';
+
+// const wrap = () => (
+//   new Promise( (resolve, reject) => {
+//     MongoClient.connect(URL, (err, db) => {
+//       const collection = db.collection(colName)
+//     })
+//   })
+// )
+
+exports.default = {
+  save: function save(_ref) {
+    var name = _ref.name,
+        method = _ref.method,
+        kind = _ref.kind;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var id = 0;
+        collection.find({}).toArray(function (searchErr, result) {
+          if (result.length) {
+            id = result[result.length - 1].id + 1;
+          }
+          collection.insert({ name: name, id: id, kind: kind, method: method, time: new Date().getTime() }, function (inerr, docs) {
+            resolve(docs);
+            db.close();
+          });
+        });
+      });
+    });
+  },
+  search: function search(_ref2) {
+    var id = _ref2.id;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        collection.find(where).toArray(function (searchErr, result) {
+          if (searchErr) {
+            reject('search error');
+          } else {
+            resolve(result);
+          }
+          db.close();
+        });
+      });
+    });
+  },
+  update: function update(_ref3) {
+    var id = _ref3.id,
+        method = _ref3.method,
+        kind = _ref3.kind;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        collection.update(where, { $set: { kind: kind, method: method } }, function (inerr, docs) {
+          resolve(docs);
+          db.close();
+        });
+      });
+    });
+  }
+};
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _fetch = __webpack_require__(2);
+
+var _filter = __webpack_require__(45);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Thead = function Thead() {
+  return _react2.default.createElement(
+    'thead',
+    null,
+    _react2.default.createElement(
+      'tr',
+      null,
+      _react2.default.createElement(
+        'th',
+        null,
+        '#'
+      ),
+      _react2.default.createElement(
+        'th',
+        null,
+        'path'
+      ),
+      _react2.default.createElement(
+        'th',
+        null,
+        'method'
+      ),
+      _react2.default.createElement(
+        'th',
+        null,
+        'depend'
+      ),
+      _react2.default.createElement(
+        'th',
+        null,
+        'bak'
+      )
+    )
+  );
+};
+
+var ApiTypeList = function (_Component) {
+  _inherits(ApiTypeList, _Component);
+
+  function ApiTypeList(props) {
+    _classCallCheck(this, ApiTypeList);
+
+    var _this = _possibleConstructorReturn(this, (ApiTypeList.__proto__ || Object.getPrototypeOf(ApiTypeList)).call(this, props));
+
+    _this.handlerClickModify = function (e) {
+      _this.props.apiModify(e);
+    };
+
+    _this.state = {
+      list: []
+    };
+    return _this;
+  }
+
+  _createClass(ApiTypeList, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      (0, _fetch.FETCH_APIINFO)({
+        type: 'search'
+      }).then(function (data) {
+        _this2.setState({
+          list: data.data
+        });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      return _react2.default.createElement(
+        'table',
+        { className: 'table table-striped table-hover' },
+        _react2.default.createElement(Thead, null),
+        _react2.default.createElement(
+          'tbody',
+          null,
+          this.state.list.map(function (item) {
+            var id = item.id,
+                name = item.name,
+                kind = item.kind,
+                method = item.method;
+
+            var kindName = (0, _filter.getPageTypeName)(_this3.props.pageTypeList, kind - 0);
+            return _react2.default.createElement(
+              'tr',
+              { key: id },
+              _react2.default.createElement(
+                'td',
+                null,
+                id
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                name
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                method
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                kindName
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                  'a',
+                  { onClick: _this3.handlerClickModify.bind(_this3, item), href: 'javascript:void(0)' },
+                  '\u7F16\u8F91'
+                )
+              )
+            );
+          })
+        )
+      );
+    }
+  }]);
+
+  return ApiTypeList;
+}(_react.Component);
+
+ApiTypeList.propTypes = {};
+
+exports.default = ApiTypeList;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var getPageTypeName = exports.getPageTypeName = function getPageTypeName(typeList, kind) {
+  return typeList.find(function (_ref) {
+    var id = _ref.id;
+    return kind === id;
+  }).name;
+};
 
 /***/ })
 /******/ ]);

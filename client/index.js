@@ -11,12 +11,14 @@ import { clientPort } from '../build/client.config'
 
 import pageTypeRoute from '../routes/pageType'
 import pageInfoRoute from '../routes/pageInfo'
+import apiInfoRoute from '../routes/apiInfo'
 
 import {
   pageList,
   apiList,
   pageType,
-  pageInfo
+  pageInfo,
+  apiInfo
 } from '../routes/api'
 
 const app = express()
@@ -59,6 +61,10 @@ app.post('*', async (req, res) => {
         break;
       case pageInfo:
         sendData = await pageInfoRoute(req)
+        res.send(Object.assign({},successData, sendData))
+        break
+      case apiInfo:
+        sendData = await apiInfoRoute(req)
         res.send(Object.assign({},successData, sendData))
         break
       default:

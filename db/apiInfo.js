@@ -1,21 +1,26 @@
 import { MongoClient, URL } from './dbConfig'
 
-const colName = 'pageInfo'
+const colName = 'apiInfo'
+
+// const wrap = () => (
+//   new Promise( (resolve, reject) => {
+//     MongoClient.connect(URL, (err, db) => {
+//       const collection = db.collection(colName)
+//     })
+//   })
+// )
 
 export default {
-  save({ name, kind, desc }) {
+  save({ name, method, kind }) {
     return new Promise((resolve, reject) => {
       MongoClient.connect(URL, (err, db) => {
-        // TODO
         const collection = db.collection(colName)
         let id = 0
-        // 实现自增id，查询最后一个，然后把id+1
         collection.find({}).toArray((searchErr, result) => {
-          // console.log(result)
           if (result.length) {
             id = result[result.length - 1].id + 1
           }
-          collection.insert({ name, id, kind, desc, time: new Date().getTime() }, (inerr, docs) => {
+          collection.insert({ name, id, kind, method, time: new Date().getTime() }, (inerr, docs) => {
             resolve(docs)
             db.close()
           })
@@ -23,7 +28,6 @@ export default {
       })
     })
   },
-
   search({id}) {
     return new Promise( (resolve,reject) => {
       MongoClient.connect(URL, (err, db) => {
@@ -43,8 +47,7 @@ export default {
       })
     })
   },
-
-  updata({id, kind, desc}) {
+  update({id, method, kind}) {
     return new Promise( (resolve,reject) => {
       MongoClient.connect(URL, (err, db) => {
         const collection = db.collection(colName)
@@ -52,26 +55,8 @@ export default {
         if(id >= 0){
           where = {id: id - 0}
         }
-        // 不用$set则更新整条数据
-        collection.update(where,{$set:{kind,desc}}, (inerr, docs) => {
+        collection.update(where,{$set:{kind,method}}, (inerr, docs) => {
           resolve(docs)
-          db.close()
-        })
-      })
-    })
-  },
-
-  delete({id}) {
-    // TODO
-    return new Promise((resolve,reject) => {
-      MongoClient.connect(URL, (err, db) => {
-        const collection = db.collection(colName)
-        collection.remove({id}, (delErr, result) => {
-          if(delErr){
-              reject(`delete pageType error`)
-          } else {
-              resolve(result)
-          }
           db.close()
         })
       })

@@ -51,7 +51,23 @@ class Menu extends Component {
                 </li>
               </ul>
             </li>
-            <li><Link to="/api">接口<b className="caret" /></Link></li>
+            <li
+              className={
+                `${this.state.nav.apiListSlide ? 'dropdown open' : 'dropup'}`
+              }
+              onMouseEnter={this.handleMouseEnter.bind(this, 'api')}
+              onMouseLeave={this.handleMouseLeave.bind(this, 'api')}
+            >
+              <Link to="/api">接口<b className="caret" /></Link>
+              <ul className="dropdown-menu">
+                <li><a href="/api/createApi">创建接口</a></li>
+                <li>
+                  <a href="/api/apiTypeModify">
+                    编辑接口类型
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li><Link to="/modify">配置</Link></li>
           </ul>
           <Search />

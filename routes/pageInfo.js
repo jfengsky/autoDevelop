@@ -54,7 +54,6 @@ export default req => {
         code
       }).then( async _data => {
         await DB.updata({
-          name,
           kind,
           desc,
           id
