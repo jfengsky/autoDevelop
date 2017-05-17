@@ -274,6 +274,8 @@ var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _pageInfo = __webpack_require__(20);
 
 var _pageInfo2 = _interopRequireDefault(_pageInfo);
@@ -335,6 +337,75 @@ exports.default = function (req) {
           data: _data
         };
       });
+    case 'searchfile':
+      return _pageInfo2.default.search({ id: id }).then(function () {
+        var _ref2 = _asyncToGenerator(_regenerator2.default.mark(function _callee2(_data) {
+          var tempData;
+          return _regenerator2.default.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  tempData = _data[0];
+                  _context2.next = 3;
+                  return _fsPageInfo2.default.read({
+                    name: tempData.name
+                  }).then(function (result) {
+                    return {
+                      data: _extends({}, tempData, {
+                        code: result
+                      })
+                    };
+                  });
+
+                case 3:
+                  return _context2.abrupt('return', _context2.sent);
+
+                case 4:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, undefined);
+        }));
+
+        return function (_x2) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    case 'updata':
+      return _fsPageInfo2.default.write({
+        name: name,
+        code: code
+      }).then(function () {
+        var _ref3 = _asyncToGenerator(_regenerator2.default.mark(function _callee3(_data) {
+          return _regenerator2.default.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.next = 2;
+                  return _pageInfo2.default.updata({
+                    name: name,
+                    kind: kind,
+                    desc: desc,
+                    id: id
+                  }).then(function (_data) {
+                    return {
+                      data: _data.ops[0]
+                    };
+                  });
+
+                case 2:
+                case 'end':
+                  return _context3.stop();
+              }
+            }
+          }, _callee3, undefined);
+        }));
+
+        return function (_x3) {
+          return _ref3.apply(this, arguments);
+        };
+      }());
     case 'delete':
       return _pageInfo2.default.delete({ id: id }).then(function (_data) {
         return {
@@ -769,8 +840,20 @@ exports.default = {
       });
     });
   },
-  delete: function _delete(_ref3) {
-    var id = _ref3.id;
+  updata: function updata(_ref3) {
+    var id = _ref3.id,
+        name = _ref3.name,
+        kind = _ref3.kind,
+        desc = _ref3.desc;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+      });
+    });
+  },
+  delete: function _delete(_ref4) {
+    var id = _ref4.id;
 
     return new Promise(function (resolve, reject) {
       _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
@@ -1185,24 +1268,11 @@ var _pageLis2 = _interopRequireDefault(_pageLis);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// const pageTypeSwitch = match => {
-//   switch (match.params.pagetype) {
-//     case 'createPage':
-//       return <CreatePage />
-//     case 'pageTypeModify':
-//       return <ModifyPageType />
-//     default:
-//       return <div>default</div>
-//   }
-// }
+// TODO 这个模块的路由需要优化一下
 
-// import {connect} from 'react-redux'
 var pageTypeSwitch = function pageTypeSwitch(match) {
   return _react2.default.createElement(_CreatePage2.default, { id: match.params.id });
 };
-
-// import {FETCH_PAGETYPE} from '../store/fetch'
-// import {updata_pageType} from '../action/pageType'
 
 var CreatePageSplit = function CreatePageSplit(_ref) {
   var match = _ref.match;
@@ -1215,10 +1285,13 @@ var CreatePageSplit = function CreatePageSplit(_ref) {
     'div',
     null,
     _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: match.url, component: pageComponent }),
-    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:id', render: function render(_ref2) {
+    _react2.default.createElement(_reactRouterDom.Route, {
+      path: match.url + '/:id',
+      render: function render(_ref2) {
         var match = _ref2.match;
         return pageTypeSwitch(match);
-      } })
+      }
+    })
   );
 };
 
@@ -1229,24 +1302,9 @@ var Home = function Home(_ref3) {
     'div',
     null,
     _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: match.url, component: _pageLis2.default }),
-    _react2.default.createElement(_reactRouterDom.Route, {
-      path: match.url + '/:pagetype',
-      component: CreatePageSplit
-    })
+    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:pagetype', component: CreatePageSplit })
   );
 };
-
-/*const Home = ({match}) => {
-  return (
-    <div>
-      <Route exact path={match.url} component={PageList} />
-      <Route
-        path={`${match.url}/:pagetype`}
-        render={({match}) => pageTypeSwitch(match)}
-      />
-    </div>
-  )
-}*/
 
 exports.default = Home;
 
@@ -1837,7 +1895,6 @@ var PageList = function (_Component) {
       (0, _fetch.FETCH_PAGEINFO)({
         type: 'search'
       }).then(function (data) {
-
         var pageList = [];
         data.data.map(function (_ref) {
           var id = _ref.id,
@@ -1877,7 +1934,7 @@ var PageList = function (_Component) {
 
             return _react2.default.createElement(
               'tr',
-              null,
+              { key: id },
               _react2.default.createElement(
                 'th',
                 { scope: 'row' },
@@ -1942,6 +1999,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _regenerator = __webpack_require__(1);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
@@ -1954,7 +2015,7 @@ var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1971,6 +2032,7 @@ var CreagePage = function (_Component) {
     var _this = _possibleConstructorReturn(this, (CreagePage.__proto__ || Object.getPrototypeOf(CreagePage)).call(this, props));
 
     _this.handlerClickCreagePage = function (e) {
+      var id = _this.props.id;
       var _this$refs = _this.refs,
           pageName = _this$refs.pageName,
           pageType = _this$refs.pageType,
@@ -1981,17 +2043,24 @@ var CreagePage = function (_Component) {
       var kind = pageType.value - 0;
       var desc = pageDesc.value;
       var code = pageCode.value;
+
+      var changeType = 'save';
+      if (id >= 0) {
+        changeType = 'updata';
+      }
+
       if (!desc || !code || !name) {
         _this.setState({
           errorMessage: '请填写页面信息'
         });
       } else {
         (0, _fetch.FETCH_PAGEINFO)({
-          type: 'save',
+          type: changeType,
           name: name,
           kind: kind,
           desc: desc,
-          code: code
+          code: code,
+          id: id
         });
       }
     };
@@ -2002,22 +2071,86 @@ var CreagePage = function (_Component) {
       });
     };
 
+    _this.handlerChangeName = function (e) {
+      _this.setState({
+        name: e.target.value
+      });
+    };
+
+    _this.handlerChangeDesc = function (e) {
+      _this.setState({
+        desc: e.target.value
+      });
+    };
+
+    _this.handlerChangeCode = function (e) {
+      _this.setState({
+        code: e.target.value
+      });
+    };
+
     _this.state = {
       type: props.pageType || 0,
       desc: props.desc || '',
       code: props.code || '',
       name: props.name || '',
-      errorMessage: ''
+      errorMessage: '',
+      isUpdata: false
     };
     return _this;
   }
 
   _createClass(CreagePage, [{
     key: 'componentDidMount',
-    value: function componentDidMount() {
+    value: function () {
+      var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee() {
+        var id, _ref2, data, state, kind, desc, code, name;
 
-      console.log(this.props.id);
-    }
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                id = this.props.id;
+
+                if (!(id >= 0)) {
+                  _context.next = 9;
+                  break;
+                }
+
+                _context.next = 4;
+                return (0, _fetch.FETCH_PAGEINFO)({
+                  type: 'searchfile',
+                  id: id
+                });
+
+              case 4:
+                _ref2 = _context.sent;
+                data = _ref2.data;
+                state = _ref2.state;
+                kind = data.kind, desc = data.desc, code = data.code, name = data.name;
+
+                this.setState({
+                  type: kind,
+                  desc: desc,
+                  code: code,
+                  name: name,
+                  isUpdata: true
+                });
+
+              case 9:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function componentDidMount() {
+        return _ref.apply(this, arguments);
+      }
+
+      return componentDidMount;
+    }()
   }, {
     key: 'render',
     value: function render() {
@@ -2025,7 +2158,8 @@ var CreagePage = function (_Component) {
           type = _state.type,
           desc = _state.desc,
           code = _state.code,
-          name = _state.name;
+          name = _state.name,
+          isUpdata = _state.isUpdata;
 
       return _react2.default.createElement(
         'div',
@@ -2043,15 +2177,15 @@ var CreagePage = function (_Component) {
             { className: 'col-xs-12' },
             _react2.default.createElement(
               'select',
-              _defineProperty({
+              {
                 className: 'form-control',
                 onChange: this.handlerChangePageType,
                 value: type,
                 ref: 'pageType'
-              }, 'onChange', this.handlerChangePageType),
-              this.props.pageTypeList.map(function (_ref) {
-                var name = _ref.name,
-                    id = _ref.id;
+              },
+              this.props.pageTypeList.map(function (_ref3) {
+                var name = _ref3.name,
+                    id = _ref3.id;
                 return _react2.default.createElement(
                   'option',
                   { key: id, value: id },
@@ -2070,7 +2204,15 @@ var CreagePage = function (_Component) {
             _react2.default.createElement(
               'div',
               { className: 'input-group' },
-              _react2.default.createElement('input', { type: 'text', ref: 'pageName', className: 'form-control', defaultValue: name, placeholder: '\u8BF7\u8F93\u5165\u6587\u4EF6\u540D' }),
+              _react2.default.createElement('input', {
+                type: 'text',
+                ref: 'pageName',
+                className: 'form-control',
+                placeholder: '\u8BF7\u8F93\u5165\u6587\u4EF6\u540D',
+                value: name,
+                onChange: this.handlerChangeName,
+                readOnly: isUpdata ? true : false
+              }),
               _react2.default.createElement(
                 'span',
                 { className: 'input-group-addon' },
@@ -2085,7 +2227,14 @@ var CreagePage = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-xs-12' },
-            _react2.default.createElement('input', { type: 'text', ref: 'pageDesc', className: 'form-control', defaultValue: desc, placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u63CF\u8FF0' })
+            _react2.default.createElement('input', {
+              type: 'text',
+              ref: 'pageDesc',
+              className: 'form-control',
+              placeholder: '\u8BF7\u8F93\u5165\u9875\u9762\u63CF\u8FF0',
+              value: desc,
+              onChange: this.handlerChangeDesc
+            })
           )
         ),
         _react2.default.createElement(
@@ -2094,7 +2243,14 @@ var CreagePage = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-xs-12' },
-            _react2.default.createElement('textarea', { className: 'form-control', ref: 'pageCode', rows: '20', placeholder: '\u8BF7\u7C98\u8D34\u9875\u9762\u6E90\u4EE3\u7801', defaultValue: code })
+            _react2.default.createElement('textarea', {
+              className: 'form-control',
+              ref: 'pageCode',
+              rows: '20',
+              placeholder: '\u8BF7\u7C98\u8D34\u9875\u9762\u6E90\u4EE3\u7801',
+              value: code,
+              onChange: this.handlerChangeCode
+            })
           )
         ),
         _react2.default.createElement(
@@ -2103,10 +2259,23 @@ var CreagePage = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-xs-12' },
-            _react2.default.createElement(
+            !isUpdata && _react2.default.createElement(
               'button',
-              { type: 'button', className: 'btn btn-primary', onClick: this.handlerClickCreagePage },
+              {
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: this.handlerClickCreagePage
+              },
               '\u521B\u5EFA'
+            ),
+            isUpdata && _react2.default.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: this.handlerClickCreagePage
+              },
+              '\u4FEE\u6539'
             )
           )
         ),

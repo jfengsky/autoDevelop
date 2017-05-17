@@ -33,6 +33,37 @@ export default req => {
           data: _data
         }
       })
+    case 'searchfile':
+      return DB.search({id}).then( async _data => {
+        let tempData = _data[0]
+        return await file.read({
+          name: tempData.name
+        }).then( result => {
+          return {
+            data: {
+              ...tempData,
+              code: result
+            }
+          }
+        })
+      })
+    case 'updata':
+      // TODO
+      return file.write({
+        name,
+        code
+      }).then( async _data => {
+        await DB.updata({
+          name,
+          kind,
+          desc,
+          id
+        }).then(_data => {
+          return {
+            data: _data.ops[0]
+          }
+        })
+      })
     case 'delete':
       return DB.delete({id}).then( _data => {
         return {

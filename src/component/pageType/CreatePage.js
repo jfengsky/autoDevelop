@@ -12,11 +12,35 @@ class CreagePage extends Component {
       code: props.code || '',
       name: props.name || '',
       errorMessage: '',
+      isUpdata: false,
     };
   }
 
-  componentDidMount() {
-    console.log(this.props.id);
+  async componentDidMount() {
+    let {id} = this.props;
+    if (id >= 0) {
+      let {
+        data,
+        state,
+      } = await FETCH_PAGEINFO({
+        type: 'searchfile',
+        id,
+      });
+
+      let {
+        kind,
+        desc,
+        code,
+        name,
+      } = data;
+      this.setState({
+        type: kind,
+        desc,
+        code,
+        name,
+        isUpdata: true,
+      });
+    }
   }
 
   render() {
@@ -25,6 +49,7 @@ class CreagePage extends Component {
       desc,
       code,
       name,
+      isUpdata,
     } = this.state;
     return (
       <div>
@@ -36,7 +61,6 @@ class CreagePage extends Component {
               onChange={this.handlerChangePageType}
               value={type}
               ref="pageType"
-              onChange={this.handlerChangePageType}
             >
               {this.props.pageTypeList.map(({name, id}) => (
                 <option key={id} value={id}>{name}</option>
@@ -51,8 +75,10 @@ class CreagePage extends Component {
                 type="text"
                 ref="pageName"
                 className="form-control"
-                defaultValue={name}
                 placeholder="请输入文件名"
+                value={name}
+                onChange={this.handlerChangeName}
+                readOnly={isUpdata ? true : false}
               />
               <span className="input-group-addon">.html</span>
             </div>
@@ -64,8 +90,9 @@ class CreagePage extends Component {
               type="text"
               ref="pageDesc"
               className="form-control"
-              defaultValue={desc}
               placeholder="请输入页面描述"
+              value={desc}
+              onChange={this.handlerChangeDesc}
             />
           </div>
         </div>
@@ -76,19 +103,29 @@ class CreagePage extends Component {
               ref="pageCode"
               rows="20"
               placeholder="请粘贴页面源代码"
-              defaultValue={code}
+              value={code}
+              onChange={this.handlerChangeCode}
             />
           </div>
         </div>
         <div className="row" style={{marginTop: 10}}>
           <div className="col-xs-12">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={this.handlerClickCreagePage}
-            >
-              创建
-            </button>
+            {!isUpdata &&
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.handlerClickCreagePage}
+              >
+                创建
+              </button>}
+            {isUpdata &&
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.handlerClickCreagePage}
+              >
+                修改
+              </button>}
           </div>
         </div>
         <div className="row" style={{marginTop: 10}}>
@@ -106,6 +143,8 @@ class CreagePage extends Component {
   }
 
   handlerClickCreagePage = e => {
+    let {id} = this.props;
+
     let {
       pageName,
       pageType,
@@ -116,17 +155,24 @@ class CreagePage extends Component {
     let kind = pageType.value - 0;
     let desc = pageDesc.value;
     let code = pageCode.value;
+
+    let changeType = 'save';
+    if (id >= 0) {
+      changeType = 'updata';
+    }
+
     if (!desc || !code || !name) {
       this.setState({
         errorMessage: '请填写页面信息',
       });
     } else {
       FETCH_PAGEINFO({
-        type: 'save',
+        type: changeType,
         name,
         kind,
         desc,
         code,
+        id,
       });
     }
   };
@@ -134,6 +180,24 @@ class CreagePage extends Component {
   handlerChangePageType = e => {
     this.setState({
       type: e.target.value - 0,
+    });
+  };
+
+  handlerChangeName = e => {
+    this.setState({
+      name: e.target.value,
+    });
+  };
+
+  handlerChangeDesc = e => {
+    this.setState({
+      desc: e.target.value,
+    });
+  };
+
+  handlerChangeCode = e => {
+    this.setState({
+      code: e.target.value,
     });
   };
 }

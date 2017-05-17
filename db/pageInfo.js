@@ -44,7 +44,16 @@ export default {
     })
   },
 
+  updata({id, name, kind, desc}) {
+    return new Promise( (resolve,reject) => {
+      MongoClient.connect(URL, (err, db) => {
+        const collection = db.collection(colName)
+      })
+    })
+  },
+
   delete({id}) {
+    // TODO
     return new Promise((resolve,reject) => {
       MongoClient.connect(URL, (err, db) => {
         const collection = db.collection(colName)

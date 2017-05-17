@@ -61,7 +61,7 @@ class PageList extends Component {
         <tbody>
           {this.state.pageList.map(({id, name, desc, kindName}) => {
             return (
-              <tr>
+              <tr key={id}>
                 <th scope="row">{id}</th>
                 <td>
                   <a href={`/pages/${name}`} target="_blank">{name}</a>
