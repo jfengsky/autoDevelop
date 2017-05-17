@@ -30431,17 +30431,29 @@ var CreateApiType = function (_Component) {
             _react2.default.createElement(
               'label',
               null,
-              _react2.default.createElement('input', { type: 'radio', name: 'optionsRadios', value: 'post', checked: method === 'post' ? true : false, onChange: function onChange(e) {
+              _react2.default.createElement('input', {
+                type: 'radio',
+                name: 'optionsRadios',
+                value: 'post',
+                checked: method === 'post' ? true : false,
+                onChange: function onChange(e) {
                   _this2.setState({ method: e.target.value });
-                } }),
+                }
+              }),
               ' POST'
             ),
             _react2.default.createElement(
               'label',
               { style: { marginLeft: 10 } },
-              _react2.default.createElement('input', { type: 'radio', name: 'optionsRadios', value: 'get', checked: method === 'get' ? true : false, onChange: function onChange(e) {
+              _react2.default.createElement('input', {
+                type: 'radio',
+                name: 'optionsRadios',
+                value: 'get',
+                checked: method === 'get' ? true : false,
+                onChange: function onChange(e) {
                   _this2.setState({ method: e.target.value });
-                } }),
+                }
+              }),
               ' GET'
             )
           )
@@ -30515,7 +30527,10 @@ var CreateApiType = function (_Component) {
             )
           )
         ),
-        _react2.default.createElement(_ApiTypeList2.default, { apiModify: this.apiModify, pageTypeList: this.props.pageTypeList })
+        _react2.default.createElement(_ApiTypeList2.default, {
+          apiModify: this.apiModify,
+          pageTypeList: this.props.pageTypeList
+        })
       );
     }
   }]);
@@ -30674,7 +30689,10 @@ var ApiTypeList = function (_Component) {
                 null,
                 _react2.default.createElement(
                   'a',
-                  { onClick: _this3.handlerClickModify.bind(_this3, item), href: 'javascript:void(0)' },
+                  {
+                    onClick: _this3.handlerClickModify.bind(_this3, item),
+                    href: 'javascript:void(0)'
+                  },
                   '\u7F16\u8F91'
                 )
               )
