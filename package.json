@@ -13,7 +13,8 @@
     "watch": "webpack --config build/webpack.config.babel.js --progress --colors --watch",
     "watchClient": "webpack --config build/webpack.config.client.babel.js --progress --colors --watch",
     "watchServer": "webpack --config build/webpack.config.server.babel.js --progress --colors --watch",
-    "prettier-code": "lint-staged"
+    "prettier-code": "lint-staged",
+    "pushpkg": "git add -A && git commit -m auto-pkg && git push origin master"
   },
   "lint-staged": {
     "linters": {

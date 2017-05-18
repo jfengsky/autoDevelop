@@ -1,32 +1,27 @@
-import DB from '../db/pageInfo'
+import DB from '../db/apiCodeInfo'
 
-import file from '../db/fsPageInfo'
+import file from '../db/fsApiCode'
 
 export default req => {
   let {
     type,
-    name,
-    code,
+    pageType,
     kind,
     desc,
-    id
+    code,
+    id,
+    name
   } = req.body
-  switch (type) {
+  switch(type) {
     case 'save':
-      return file.write({
-        name,
-        code
-      }).then( async _data => {
-        return await DB.save({
-          name,
-          kind,
-          desc
-        }).then(_data => {
+      return file.write({code}).then( async _data => {
+        return await DB.save({name: _data.name, pageType, kind, desc}).then( result => {
           return {
-            data: _data.ops[0]
+            data: result.ops[0]
           }
         })
       })
+      
     case 'search':
       return DB.search({id}).then( _data => {
         return {
@@ -47,29 +42,19 @@ export default req => {
           }
         })
       })
-    case 'updata':
-      // TODO
-      return file.write({
-        name,
-        code
-      }).then( async _data => {
-        await DB.updata({
-          kind,
-          desc,
-          id
-        }).then(_data => {
+    case 'update':
+      return file.write({name,code}).then( result => {
+        return DB.update({id, desc}).then(_data => {
           return {
-            data: _data.ops[0]
+            data: _data
           }
         })
       })
     case 'delete':
-      return DB.delete({id}).then( _data => {
+      return DB.delete({id}).then(_data => {
         return {
           data: _data
         }
       })
-    default:
-      break
   }
 }

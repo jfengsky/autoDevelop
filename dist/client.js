@@ -82,7 +82,7 @@ module.exports = require("react");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FETCH_APIINFO = exports.FETCH_PAGEINFO = exports.FETCH_PAGETYPE = undefined;
+exports.FETCH_APICODEINFO = exports.FETCH_APIINFO = exports.FETCH_PAGEINFO = exports.FETCH_PAGETYPE = undefined;
 
 var _regenerator = __webpack_require__(2);
 
@@ -201,6 +201,37 @@ var FETCH_APIINFO = exports.FETCH_APIINFO = function () {
   };
 }();
 
+var FETCH_APICODEINFO = exports.FETCH_APICODEINFO = function () {
+  var _ref4 = _asyncToGenerator(_regenerator2.default.mark(function _callee4(data) {
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.next = 2;
+            return fetch(_api.apiCodeInfo, {
+              method: 'post',
+              headers: headers,
+              body: JSON.stringify(data)
+            }).then(function (response) {
+              return response.json();
+            });
+
+          case 2:
+            return _context4.abrupt('return', _context4.sent);
+
+          case 3:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, _callee4, undefined);
+  }));
+
+  return function FETCH_APICODEINFO(_x4) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
@@ -231,7 +262,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.URL = exports.MongoClient = undefined;
 
-var _mongodb = __webpack_require__(43);
+var _mongodb = __webpack_require__(44);
 
 var _mongodb2 = _interopRequireDefault(_mongodb);
 
@@ -269,8 +300,10 @@ var pageInfo = exports.pageInfo = '/pageInfo';
 
 var apiInfo = exports.apiInfo = '/apiInfo';
 
+var apiCodeInfo = exports.apiCodeInfo = '/apiCodeInfo';
+
 var pageList = exports.pageList = [index, home, api, modify];
-var apiList = exports.apiList = [apiInfo, pageType, pageInfo];
+var apiList = exports.apiList = [apiInfo, pageType, pageInfo, apiCodeInfo];
 
 /***/ }),
 /* 7 */
@@ -314,11 +347,12 @@ exports.default = function (req) {
       name = _req$body.name,
       method = _req$body.method,
       kind = _req$body.kind,
+      desc = _req$body.desc,
       id = _req$body.id;
 
   switch (type) {
     case 'save':
-      return _apiInfo2.default.save({ name: name, method: method, kind: kind }).then(function (_data) {
+      return _apiInfo2.default.save({ name: name, method: method, kind: kind, desc: desc }).then(function (_data) {
         return {
           data: _data.ops[0]
         };
@@ -330,7 +364,7 @@ exports.default = function (req) {
         };
       });
     case 'update':
-      return _apiInfo2.default.update({ id: id, method: method, kind: kind }).then(function (_data) {
+      return _apiInfo2.default.update({ id: id, method: method, kind: kind, desc: desc }).then(function (_data) {
         return {
           data: _data
         };
@@ -405,6 +439,9 @@ exports.default = function (req) {
                   });
 
                 case 2:
+                  return _context.abrupt('return', _context.sent);
+
+                case 3:
                 case 'end':
                   return _context.stop();
               }
@@ -568,19 +605,19 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(4);
 
-var _Menu = __webpack_require__(31);
+var _Menu = __webpack_require__(32);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _Home = __webpack_require__(27);
+var _Home = __webpack_require__(28);
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _Api = __webpack_require__(25);
+var _Api = __webpack_require__(26);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _Modify = __webpack_require__(29);
+var _Modify = __webpack_require__(30);
 
 var _Modify2 = _interopRequireDefault(_Modify);
 
@@ -719,6 +756,10 @@ var _apiInfo = __webpack_require__(8);
 
 var _apiInfo2 = _interopRequireDefault(_apiInfo);
 
+var _apiCodeInfo = __webpack_require__(48);
+
+var _apiCodeInfo2 = _interopRequireDefault(_apiCodeInfo);
+
 var _api = __webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -762,14 +803,14 @@ app.post('*', function () {
         switch (_context.prev = _context.next) {
           case 0:
             if (!(_api.apiList.indexOf(req.path) >= 0)) {
-              _context.next = 23;
+              _context.next = 28;
               break;
             }
 
             // todo switch接口
             sendData = {};
             _context.t0 = req.path;
-            _context.next = _context.t0 === _api.pageType ? 5 : _context.t0 === _api.pageInfo ? 10 : _context.t0 === _api.apiInfo ? 15 : 20;
+            _context.next = _context.t0 === _api.pageType ? 5 : _context.t0 === _api.pageInfo ? 10 : _context.t0 === _api.apiInfo ? 15 : _context.t0 === _api.apiCodeInfo ? 20 : 25;
             break;
 
           case 5:
@@ -780,7 +821,7 @@ app.post('*', function () {
             sendData = _context.sent;
 
             res.send(Object.assign({}, successData, sendData));
-            return _context.abrupt('break', 21);
+            return _context.abrupt('break', 26);
 
           case 10:
             _context.next = 12;
@@ -790,7 +831,7 @@ app.post('*', function () {
             sendData = _context.sent;
 
             res.send(Object.assign({}, successData, sendData));
-            return _context.abrupt('break', 21);
+            return _context.abrupt('break', 26);
 
           case 15:
             _context.next = 17;
@@ -800,19 +841,29 @@ app.post('*', function () {
             sendData = _context.sent;
 
             res.send(Object.assign({}, successData, sendData));
-            return _context.abrupt('break', 21);
+            return _context.abrupt('break', 26);
 
           case 20:
-            return _context.abrupt('break', 21);
+            _context.next = 22;
+            return (0, _apiCodeInfo2.default)(req);
 
-          case 21:
-            _context.next = 24;
+          case 22:
+            sendData = _context.sent;
+
+            res.send(Object.assign({}, successData, sendData));
+            return _context.abrupt('break', 26);
+
+          case 25:
+            return _context.abrupt('break', 26);
+
+          case 26:
+            _context.next = 29;
             break;
 
-          case 23:
+          case 28:
             res.sendStatus('404');
 
-          case 24:
+          case 29:
           case 'end':
             return _context.stop();
         }
@@ -856,7 +907,8 @@ exports.default = {
   save: function save(_ref) {
     var name = _ref.name,
         method = _ref.method,
-        kind = _ref.kind;
+        kind = _ref.kind,
+        desc = _ref.desc;
 
     return new Promise(function (resolve, reject) {
       _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
@@ -866,7 +918,7 @@ exports.default = {
           if (result.length) {
             id = result[result.length - 1].id + 1;
           }
-          collection.insert({ name: name, id: id, kind: kind, method: method, time: new Date().getTime() }, function (inerr, docs) {
+          collection.insert({ name: name, id: id, kind: kind, method: method, desc: desc, time: new Date().getTime() }, function (inerr, docs) {
             resolve(docs);
             db.close();
           });
@@ -898,7 +950,8 @@ exports.default = {
   update: function update(_ref3) {
     var id = _ref3.id,
         method = _ref3.method,
-        kind = _ref3.kind;
+        kind = _ref3.kind,
+        desc = _ref3.desc;
 
     return new Promise(function (resolve, reject) {
       _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
@@ -907,7 +960,7 @@ exports.default = {
         if (id >= 0) {
           where = { id: id - 0 };
         }
-        collection.update(where, { $set: { kind: kind, method: method } }, function (inerr, docs) {
+        collection.update(where, { $set: { kind: kind, method: method, desc: desc } }, function (inerr, docs) {
           resolve(docs);
           db.close();
         });
@@ -940,11 +993,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _fs = __webpack_require__(42);
+var _fs = __webpack_require__(43);
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _path = __webpack_require__(44);
+var _path = __webpack_require__(45);
 
 var _path2 = _interopRequireDefault(_path);
 
@@ -1006,7 +1059,6 @@ exports.default = {
         var id = 0;
         // 实现自增id，查询最后一个，然后把id+1
         collection.find({}).toArray(function (searchErr, result) {
-          // console.log(result)
           if (result.length) {
             id = result[result.length - 1].id + 1;
           }
@@ -1105,7 +1157,6 @@ exports.default = {
         var id = 0;
         // 实现自增id，查询最后一个，然后把id+1
         collection.find({}).toArray(function (searchErr, result) {
-          // console.log(result)
           if (result.length) {
             id = result[result.length - 1].id + 1;
           }
@@ -1161,6 +1212,25 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var UPDATA_APITYPE = exports.UPDATA_APITYPE = 'UPDATA_APITYPE';
+
+var update_apiType = exports.update_apiType = function update_apiType(value) {
+  return {
+    type: UPDATA_APITYPE,
+    value: value
+  };
+};
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 var ADD_PAGETYPE = exports.ADD_PAGETYPE = 'ADD_PAGETYPE';
 var UPDATA_PAGETYPE = exports.UPDATA_PAGETYPE = 'UPDATA_PAGETYPE';
 var DELETE_PAGETYPE = exports.DELETE_PAGETYPE = 'DELETE_PAGETYPE';
@@ -1187,7 +1257,7 @@ var delete_pageType = exports.delete_pageType = function delete_pageType(value) 
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1203,17 +1273,15 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(4);
 
-var _reactRedux = __webpack_require__(3);
-
-var _ApiList = __webpack_require__(33);
+var _ApiList = __webpack_require__(34);
 
 var _ApiList2 = _interopRequireDefault(_ApiList);
 
-var _CreateApi = __webpack_require__(36);
+var _CreateApi = __webpack_require__(37);
 
 var _CreateApi2 = _interopRequireDefault(_CreateApi);
 
-var _ApiModify = __webpack_require__(34);
+var _ApiModify = __webpack_require__(35);
 
 var _ApiModify2 = _interopRequireDefault(_ApiModify);
 
@@ -1221,14 +1289,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var RouterApi = function RouterApi(_ref) {
   var match = _ref.match;
+  var _match$params = match.params,
+      type = _match$params.type,
+      id = _match$params.id;
 
-  switch (match.params.type) {
+  switch (type) {
     case 'apiTypeModify':
-      return _react2.default.createElement(_ApiModify2.default, null);
+      return _react2.default.createElement(_ApiModify2.default, { id: id });
     default:
-      return _react2.default.createElement(_CreateApi2.default, null);
+      return _react2.default.createElement(_CreateApi2.default, { id: id });
   }
 };
+// import {connect} from 'react-redux'
 
 var Api = function Api(_ref2) {
   var match = _ref2.match;
@@ -1236,6 +1308,7 @@ var Api = function Api(_ref2) {
     _reactRouterDom.Switch,
     null,
     _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: match.url, component: _ApiList2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:type/:id', component: RouterApi }),
     _react2.default.createElement(_reactRouterDom.Route, { path: match.url + '/:type', component: RouterApi })
   );
 };
@@ -1245,7 +1318,7 @@ Api.propTypes = {};
 exports.default = Api;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1267,11 +1340,11 @@ var _react2 = _interopRequireDefault(_react);
 
 var _fetch = __webpack_require__(1);
 
-var _Select = __webpack_require__(30);
+var _Select = __webpack_require__(31);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _InputText = __webpack_require__(28);
+var _InputText = __webpack_require__(29);
 
 var _InputText2 = _interopRequireDefault(_InputText);
 
@@ -1445,7 +1518,7 @@ EditPageType.propTypes = {};
 exports.default = EditPageType;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1461,15 +1534,15 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(4);
 
-var _CreatePage = __webpack_require__(38);
+var _CreatePage = __webpack_require__(39);
 
 var _CreatePage2 = _interopRequireDefault(_CreatePage);
 
-var _Modify = __webpack_require__(39);
+var _Modify = __webpack_require__(40);
 
 var _Modify2 = _interopRequireDefault(_Modify);
 
-var _pageLis = __webpack_require__(37);
+var _pageLis = __webpack_require__(38);
 
 var _pageLis2 = _interopRequireDefault(_pageLis);
 
@@ -1516,7 +1589,7 @@ var Home = function Home(_ref3) {
 exports.default = Home;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1587,7 +1660,7 @@ exports.default = InputText;
 InputText.propTypes = {};
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1639,7 +1712,7 @@ Modify.propTypes = {};
 exports.default = Modify;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1755,7 +1828,7 @@ Select.propTypes = {};
 exports.default = Select;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1777,15 +1850,17 @@ var _reactRouterDom = __webpack_require__(4);
 
 var _reactRedux = __webpack_require__(3);
 
-var _Search = __webpack_require__(32);
+var _Search = __webpack_require__(33);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _modal = __webpack_require__(40);
+var _modal = __webpack_require__(41);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _pageType = __webpack_require__(24);
+var _pageType = __webpack_require__(25);
+
+var _apiType = __webpack_require__(24);
 
 var _fetch = __webpack_require__(1);
 
@@ -1851,6 +1926,11 @@ var Menu = function (_Component) {
         type: 'search'
       }).then(function (data) {
         _this2.props.updataPageType(data.data);
+      });
+      (0, _fetch.FETCH_APIINFO)({
+        type: 'search'
+      }).then(function (data) {
+        _this2.props.updateApiType(data.data);
       });
     }
   }, {
@@ -1967,6 +2047,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     // },
     updataPageType: function updataPageType(data) {
       dispatch((0, _pageType.updata_pageType)(data));
+    },
+    updateApiType: function updateApiType(data) {
+      dispatch((0, _apiType.update_apiType)(data));
     }
   };
 };
@@ -1974,7 +2057,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Menu);
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2032,58 +2115,6 @@ exports.default = Search;
 Search.propTypes = {};
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ApiList = function (_Component) {
-  _inherits(ApiList, _Component);
-
-  function ApiList() {
-    _classCallCheck(this, ApiList);
-
-    return _possibleConstructorReturn(this, (ApiList.__proto__ || Object.getPrototypeOf(ApiList)).apply(this, arguments));
-  }
-
-  _createClass(ApiList, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        'Api list modify'
-      );
-    }
-  }]);
-
-  return ApiList;
-}(_react.Component);
-
-ApiList.propTypes = {};
-
-exports.default = ApiList;
-
-/***/ }),
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2104,7 +2135,106 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(3);
 
-var _ApiTypeList = __webpack_require__(35);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ApiList = function (_Component) {
+  _inherits(ApiList, _Component);
+
+  function ApiList(props) {
+    _classCallCheck(this, ApiList);
+
+    return _possibleConstructorReturn(this, (ApiList.__proto__ || Object.getPrototypeOf(ApiList)).call(this, props));
+  }
+
+  _createClass(ApiList, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'h5',
+          { className: 'modal-title' },
+          '\u6240\u6709\u63A5\u53E3\u5217\u8868'
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row' },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
+        )
+      );
+    }
+  }]);
+
+  return ApiList;
+}(_react.Component);
+
+ApiList.propTypes = {};
+
+var mapStateToProps = function mapStateToProps(state) {
+  return _extends({}, state);
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(ApiList);
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(3);
+
+var _ApiTypeList = __webpack_require__(36);
 
 var _ApiTypeList2 = _interopRequireDefault(_ApiTypeList);
 
@@ -2146,6 +2276,7 @@ var CreateApiType = function (_Component) {
           name = _this$state.name,
           type = _this$state.type,
           method = _this$state.method,
+          desc = _this$state.desc,
           id = _this$state.id;
 
 
@@ -2163,6 +2294,7 @@ var CreateApiType = function (_Component) {
           type: modifyType,
           method: method,
           name: name,
+          desc: desc,
           kind: type,
           id: id
         }).then(function (_data) {
@@ -2184,6 +2316,7 @@ var CreateApiType = function (_Component) {
       name: '',
       isUpdata: false,
       type: 0,
+      desc: '',
       method: 'post',
       errorMessage: ''
     };
@@ -2200,6 +2333,7 @@ var CreateApiType = function (_Component) {
           isUpdata = _state.isUpdata,
           type = _state.type,
           method = _state.method,
+          desc = _state.desc,
           errorMessage = _state.errorMessage;
 
       if (name) {
@@ -2222,12 +2356,29 @@ var CreateApiType = function (_Component) {
             _react2.default.createElement('input', {
               type: 'text',
               className: 'form-control',
-              placeholder: '\u8BF7\u8F93\u5165\u63A5\u8DEF\u5F84',
+              placeholder: '\u8BF7\u8F93\u5165\u63A5\u53E3\u8DEF\u5F84',
               value: name,
               onChange: function onChange(e) {
                 _this2.setState({ name: e.target.value });
               },
               readOnly: isUpdata ? true : false
+            })
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement('input', {
+              type: 'text',
+              className: 'form-control',
+              placeholder: '\u8BF7\u8F93\u5165\u63A5\u53E3\u63CF\u8FF0',
+              value: desc,
+              onChange: function onChange(e) {
+                _this2.setState({ desc: e.target.value });
+              }
             })
           )
         ),
@@ -2366,7 +2517,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(CreateApiType);
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2384,7 +2535,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _fetch = __webpack_require__(1);
 
-var _filter = __webpack_require__(41);
+var _filter = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2410,6 +2561,11 @@ var Thead = function Thead() {
         'th',
         null,
         'path'
+      ),
+      _react2.default.createElement(
+        'th',
+        null,
+        'desc'
       ),
       _react2.default.createElement(
         'th',
@@ -2477,6 +2633,7 @@ var ApiTypeList = function (_Component) {
             var id = item.id,
                 name = item.name,
                 kind = item.kind,
+                desc = item.desc,
                 method = item.method;
 
             var kindName = (0, _filter.getPageTypeName)(_this3.props.pageTypeList, kind - 0);
@@ -2492,6 +2649,11 @@ var ApiTypeList = function (_Component) {
                 'td',
                 null,
                 name
+              ),
+              _react2.default.createElement(
+                'td',
+                null,
+                desc
               ),
               _react2.default.createElement(
                 'td',
@@ -2530,7 +2692,7 @@ ApiTypeList.propTypes = {};
 exports.default = ApiTypeList;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2540,13 +2702,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _regenerator = __webpack_require__(2);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = __webpack_require__(3);
+
+var _fetch = __webpack_require__(1);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2558,117 +2732,276 @@ var CreateApi = function (_Component) {
   _inherits(CreateApi, _Component);
 
   function CreateApi(props) {
+    var _this2 = this;
+
     _classCallCheck(this, CreateApi);
 
-    return _possibleConstructorReturn(this, (CreateApi.__proto__ || Object.getPrototypeOf(CreateApi)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (CreateApi.__proto__ || Object.getPrototypeOf(CreateApi)).call(this, props));
+
+    _this.handlerClickApi = function () {
+      var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(e) {
+        var _this$state, pageType, kind, desc, code, id, name, changeType, data;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this$state = _this.state, pageType = _this$state.pageType, kind = _this$state.kind, desc = _this$state.desc, code = _this$state.code, id = _this$state.id, name = _this$state.name;
+
+                if (code) {
+                  _context.next = 3;
+                  break;
+                }
+
+                return _context.abrupt('return', false);
+
+              case 3:
+                changeType = 'save';
+
+                if (id >= 0) {
+                  changeType = 'update';
+                }
+                _context.next = 7;
+                return (0, _fetch.FETCH_APICODEINFO)({
+                  type: changeType,
+                  pageType: pageType,
+                  kind: kind,
+                  desc: desc,
+                  code: code,
+                  id: id,
+                  name: name
+                });
+
+              case 7:
+                data = _context.sent;
+
+                window.location.reload();
+
+              case 9:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    _this.state = {
+      pageType: 0,
+      kind: 0,
+      desc: '',
+      code: '',
+      name: '',
+      id: props.id,
+      isUpdate: false
+    };
+    return _this;
   }
 
   _createClass(CreateApi, [{
-    key: "render",
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      var id = this.props.id;
+
+      if (id >= 0) {
+        (0, _fetch.FETCH_APICODEINFO)({
+          type: 'searchfile',
+          id: id
+        }).then(function (data) {
+          var _data$data = data.data,
+              pageType = _data$data.pageType,
+              desc = _data$data.desc,
+              code = _data$data.code,
+              kind = _data$data.kind,
+              name = _data$data.name;
+
+          _this3.setState({
+            pageType: pageType,
+            desc: desc,
+            code: code,
+            kind: kind,
+            name: name,
+            isUpdate: true
+          });
+        });
+      }
+    }
+  }, {
+    key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this4 = this;
+
+      var _state = this.state,
+          pageType = _state.pageType,
+          kind = _state.kind,
+          desc = _state.desc,
+          code = _state.code,
+          id = _state.id,
+          isUpdate = _state.isUpdate;
+      var _props = this.props,
+          pageTypeList = _props.pageTypeList,
+          apiTypeList = _props.apiTypeList;
+
+
+      var isModify = id >= 0 ? true : false;
+
+      // 根据页面类型筛选该页面的接口
+      var apiList = [];
+      apiTypeList.map(function (item) {
+        if (item.kind - 0 === pageType - 0) {
+          apiList.push(item);
+        }
+      });
 
       return _react2.default.createElement(
-        "div",
+        'div',
         null,
         _react2.default.createElement(
-          "h5",
-          { className: "modal-title" },
-          "\u521B\u5EFA\u63A5\u53E3\u6A21\u677F"
+          'h5',
+          { className: 'modal-title' },
+          '\u521B\u5EFA\u63A5\u53E3\u6A21\u677F'
         ),
         _react2.default.createElement(
-          "div",
-          { className: "row" },
+          'div',
+          { className: 'row' },
           _react2.default.createElement(
-            "div",
-            { className: "col-xs-12" },
-            _react2.default.createElement("select", {
-              className: "form-control",
-              onChange: function onChange(e) {
-                _this2.setState({ type: e.target.value });
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement(
+              'select',
+              {
+                className: 'form-control',
+                onChange: function onChange(e) {
+                  _this4.setState({ pageType: e.target.value - 0 });
+                },
+                value: pageType,
+                readOnly: isUpdate
               },
-              value: this.props.type
-            })
+              pageTypeList.map(function (_ref2) {
+                var id = _ref2.id,
+                    name = _ref2.name;
+                return _react2.default.createElement(
+                  'option',
+                  { key: id, value: id },
+                  name
+                );
+              })
+            )
           )
         ),
         _react2.default.createElement(
-          "div",
-          { className: "row", style: { marginTop: 10 } },
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
           _react2.default.createElement(
-            "div",
-            { className: "col-xs-12" },
-            _react2.default.createElement("input", {
-              type: "text",
-              className: "form-control",
-              placeholder: "\u8BF7\u8F93\u5165\u63A5\u53E3\u63CF\u8FF0",
-              value: this.props.name,
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement(
+              'select',
+              {
+                className: 'form-control',
+                onChange: function onChange(e) {
+                  _this4.setState({ kind: e.target.value - 0 });
+                },
+                value: kind,
+                readOnly: isUpdate
+              },
+              apiList.map(function (_ref3) {
+                var id = _ref3.id,
+                    name = _ref3.name;
+                return _react2.default.createElement(
+                  'option',
+                  { key: id, value: id },
+                  name
+                );
+              })
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement('input', {
+              type: 'text',
+              className: 'form-control',
+              placeholder: '\u8BF7\u8F93\u5165\u6A21\u62DF\u63A5\u53E3\u7684\u7279\u5F81\u63CF\u8FF0',
+              value: desc,
               onChange: function onChange(e) {
-                _this2.setState({ name: e.target.value });
+                _this4.setState({ desc: e.target.value });
               }
             })
           )
         ),
         _react2.default.createElement(
-          "div",
-          { className: "row", style: { marginTop: 10 } },
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
           _react2.default.createElement(
-            "div",
-            { className: "col-xs-12" },
-            _react2.default.createElement("textarea", {
-              className: "form-control",
-              ref: "pageCode",
-              rows: "20",
-              placeholder: "\u8BF7\u7C98\u8D34\u9875\u9762\u6E90\u4EE3\u7801",
-              value: this.props.code,
-              onChange: this.handlerChangeCode
+            'div',
+            { className: 'col-xs-12' },
+            _react2.default.createElement('textarea', {
+              className: 'form-control',
+              rows: '20',
+              placeholder: '\u8BF7\u7C98\u8D34\u9875\u9762\u6E90\u4EE3\u7801',
+              value: code,
+              onChange: function onChange(e) {
+                _this4.setState({ code: e.target.value });
+              }
             })
           )
         ),
         _react2.default.createElement(
-          "div",
-          { className: "row", style: { marginTop: 10 } },
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
           _react2.default.createElement(
-            "div",
-            { className: "col-xs-12" },
-            _react2.default.createElement(
-              "button",
+            'div',
+            { className: 'col-xs-12' },
+            !isModify && _react2.default.createElement(
+              'button',
               {
-                type: "button",
-                className: "btn btn-primary",
-                onClick: this.handlerClickCreagePage
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: this.handlerClickApi
               },
-              "\u521B\u5EFA"
+              '\u521B\u5EFA'
             ),
-            _react2.default.createElement(
-              "button",
+            isModify && _react2.default.createElement(
+              'button',
               {
-                type: "button",
-                className: "btn btn-primary",
-                onClick: this.handlerClickCreagePage
+                type: 'button',
+                className: 'btn btn-primary',
+                onClick: this.handlerClickApi
               },
-              "\u7F16\u8F91"
+              '\u7F16\u8F91'
             ),
-            _react2.default.createElement(
-              "button",
+            isModify && _react2.default.createElement(
+              'button',
               {
-                type: "button",
-                className: "btn btn-danger",
+                type: 'button',
+                className: 'btn btn-danger',
                 onClick: this.handlerClickCreagePage,
                 style: { marginLeft: 20 }
               },
-              "\u5220\u9664"
+              '\u5220\u9664'
             )
           )
         ),
         _react2.default.createElement(
-          "div",
-          { className: "row", style: { marginTop: 10 } },
-          _react2.default.createElement("div", { className: "col-xs-12" })
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
         ),
         _react2.default.createElement(
-          "div",
-          { className: "row", style: { marginTop: 10 } },
-          _react2.default.createElement("div", { className: "col-xs-12" })
+          'div',
+          { className: 'row', style: { marginTop: 10 } },
+          _react2.default.createElement('div', { className: 'col-xs-12' })
         )
       );
     }
@@ -2679,10 +3012,14 @@ var CreateApi = function (_Component) {
 
 CreateApi.propTypes = {};
 
-exports.default = CreateApi;
+var mapStateToProps = function mapStateToProps(state) {
+  return _extends({}, state);
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(CreateApi);
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2872,7 +3209,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PageList);
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3207,7 +3544,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CreagePage);
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3504,7 +3841,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ModifyPageType);
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3518,11 +3855,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(45);
+var _reactDom = __webpack_require__(46);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _EditPageType = __webpack_require__(26);
+var _EditPageType = __webpack_require__(27);
 
 var _EditPageType2 = _interopRequireDefault(_EditPageType);
 
@@ -3551,7 +3888,7 @@ var modal = function modal(props) {
 exports.default = modal;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3568,28 +3905,302 @@ var getPageTypeName = exports.getPageTypeName = function getPageTypeName(typeLis
 };
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
+
+/***/ }),
+/* 47 */,
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = __webpack_require__(2);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _apiCodeInfo = __webpack_require__(49);
+
+var _apiCodeInfo2 = _interopRequireDefault(_apiCodeInfo);
+
+var _fsApiCode = __webpack_require__(50);
+
+var _fsApiCode2 = _interopRequireDefault(_fsApiCode);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+exports.default = function (req) {
+  var _req$body = req.body,
+      type = _req$body.type,
+      pageType = _req$body.pageType,
+      kind = _req$body.kind,
+      desc = _req$body.desc,
+      code = _req$body.code,
+      id = _req$body.id,
+      name = _req$body.name;
+
+  switch (type) {
+    case 'save':
+      return _fsApiCode2.default.write({ code: code }).then(function () {
+        var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(_data) {
+          return _regenerator2.default.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return _apiCodeInfo2.default.save({ name: _data.name, pageType: pageType, kind: kind, desc: desc }).then(function (result) {
+                    return {
+                      data: result.ops[0]
+                    };
+                  });
+
+                case 2:
+                  return _context.abrupt('return', _context.sent);
+
+                case 3:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, undefined);
+        }));
+
+        return function (_x) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+
+    case 'search':
+      return _apiCodeInfo2.default.search({ id: id }).then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+    case 'searchfile':
+      return _apiCodeInfo2.default.search({ id: id }).then(function () {
+        var _ref2 = _asyncToGenerator(_regenerator2.default.mark(function _callee2(_data) {
+          var tempData;
+          return _regenerator2.default.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  tempData = _data[0];
+                  _context2.next = 3;
+                  return _fsApiCode2.default.read({
+                    name: tempData.name
+                  }).then(function (result) {
+                    return {
+                      data: _extends({}, tempData, {
+                        code: result
+                      })
+                    };
+                  });
+
+                case 3:
+                  return _context2.abrupt('return', _context2.sent);
+
+                case 4:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, undefined);
+        }));
+
+        return function (_x2) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    case 'update':
+      return _fsApiCode2.default.write({ name: name, code: code }).then(function (result) {
+        return _apiCodeInfo2.default.update({ id: id, desc: desc }).then(function (_data) {
+          return {
+            data: _data
+          };
+        });
+      });
+    case 'delete':
+      return _apiCodeInfo2.default.delete({ id: id }).then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+  }
+};
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _dbConfig = __webpack_require__(5);
+
+var colName = 'apiCodeInfo';
+
+exports.default = {
+  save: function save(_ref) {
+    var name = _ref.name,
+        pageType = _ref.pageType,
+        kind = _ref.kind,
+        desc = _ref.desc;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var id = 0;
+        collection.find({}).toArray(function (searchErr, result) {
+          if (result.length) {
+            id = result[result.length - 1].id + 1;
+          }
+          collection.insert({ name: name, id: id, kind: kind, pageType: pageType, desc: desc, time: new Date().getTime() }, function (inerr, docs) {
+            resolve(docs);
+            db.close();
+          });
+        });
+      });
+    });
+  },
+  search: function search(_ref2) {
+    var id = _ref2.id;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        collection.find(where).toArray(function (searchErr, result) {
+          if (searchErr) {
+            reject('search error');
+          } else {
+            resolve(result);
+          }
+          db.close();
+        });
+      });
+    });
+  },
+  update: function update(_ref3) {
+    var id = _ref3.id,
+        desc = _ref3.desc;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        collection.update(where, { $set: { desc: desc } }, function (inerr, docs) {
+          resolve(docs);
+          db.close();
+        });
+      });
+    });
+  },
+  delete: function _delete(_ref4) {
+    var id = _ref4.id;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        collection.remove({ id: id }, function (inerr, docs) {
+          resolve(docs);
+          db.close();
+        });
+      });
+    });
+  }
+};
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _fs = __webpack_require__(43);
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = __webpack_require__(45);
+
+var _path2 = _interopRequireDefault(_path);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var file = {
+    read: function read(_ref) {
+        var name = _ref.name;
+
+        return new Promise(function (resolve, reject) {
+            _fs2.default.readFile('./public/apis/' + name + '.json', 'utf-8', function (err, data) {
+                resolve(data);
+            });
+        });
+    },
+    write: function write(_ref2) {
+        var name = _ref2.name,
+            code = _ref2.code;
+
+        // 随机生成一个英文名，这里用时间毫秒
+        if (!name) {
+            name = 'api' + new Date().getTime();
+        }
+        return new Promise(function (resolve, reject) {
+            _fs2.default.writeFile('./public/apis/' + name + '.json', decodeURIComponent(code), 'utf-8', function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({ name: name });
+                }
+            });
+        });
+    }
+};
+
+exports.default = file;
 
 /***/ })
 /******/ ]);

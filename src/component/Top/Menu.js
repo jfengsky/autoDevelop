@@ -6,8 +6,9 @@ import Search from './Search';
 import modal from '../../container/modal';
 
 import {add_pageType, updata_pageType} from '../../action/pageType';
+import {update_apiType} from '../../action/apiType';
 
-import {FETCH_PAGETYPE} from '../../store/fetch';
+import {FETCH_PAGETYPE, FETCH_APIINFO} from '../../store/fetch';
 
 class Menu extends Component {
   constructor(props) {
@@ -26,6 +27,11 @@ class Menu extends Component {
       type: 'search',
     }).then(data => {
       this.props.updataPageType(data.data);
+    });
+    FETCH_APIINFO({
+      type: 'search',
+    }).then(data => {
+      this.props.updateApiType(data.data);
     });
   }
 
@@ -116,6 +122,9 @@ const mapDispatchToProps = dispatch => {
     // },
     updataPageType: data => {
       dispatch(updata_pageType(data));
+    },
+    updateApiType: data => {
+      dispatch(update_apiType(data));
     },
   };
 };

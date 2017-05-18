@@ -11,6 +11,7 @@ class CreateApiType extends Component {
       name: '',
       isUpdata: false,
       type: 0,
+      desc: '',
       method: 'post',
       errorMessage: '',
     };
@@ -22,6 +23,7 @@ class CreateApiType extends Component {
       isUpdata,
       type,
       method,
+      desc,
       errorMessage,
     } = this.state;
     if (name) {
@@ -35,12 +37,25 @@ class CreateApiType extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="请输入接路径"
+              placeholder="请输入接口路径"
               value={name}
               onChange={e => {
                 this.setState({name: e.target.value});
               }}
               readOnly={isUpdata ? true : false}
+            />
+          </div>
+        </div>
+        <div className="row" style={{marginTop: 10}}>
+          <div className="col-xs-12">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="请输入接口描述"
+              value={desc}
+              onChange={e => {
+                this.setState({desc: e.target.value});
+              }}
             />
           </div>
         </div>
@@ -147,6 +162,7 @@ class CreateApiType extends Component {
       name,
       type,
       method,
+      desc,
       id,
     } = this.state;
 
@@ -164,6 +180,7 @@ class CreateApiType extends Component {
         type: modifyType,
         method,
         name,
+        desc,
         kind: type,
         id,
       }).then(_data => {

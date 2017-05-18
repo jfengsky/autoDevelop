@@ -9,6 +9,7 @@ const Thead = () => (
     <tr>
       <th>#</th>
       <th>path</th>
+      <th>desc</th>
       <th>method</th>
       <th>depend</th>
       <th>bak</th>
@@ -44,6 +45,7 @@ class ApiTypeList extends Component {
               id,
               name,
               kind,
+              desc,
               method,
             } = item;
             let kindName = getPageTypeName(this.props.pageTypeList, kind - 0);
@@ -51,6 +53,7 @@ class ApiTypeList extends Component {
               <tr key={id}>
                 <td>{id}</td>
                 <td>{name}</td>
+                <td>{desc}</td>
                 <td>{method}</td>
                 <td>{kindName}</td>
                 <td>

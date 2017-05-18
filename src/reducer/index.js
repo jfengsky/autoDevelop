@@ -6,6 +6,8 @@ import {
   DELETE_PAGETYPE,
 } from '../action/pageType'
 
+import {UPDATA_APITYPE} from '../action/apiType'
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case ADD_PAGETYPE:
@@ -27,6 +29,10 @@ export default (state = initialState, action) => {
     //   ...state,
     //   pageTypeList: []
     // })
+    case UPDATA_APITYPE:
+      return Object.assign({}, state, {
+        apiTypeList: action.value,
+      })
     default:
       return state
   }

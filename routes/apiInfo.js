@@ -6,11 +6,12 @@ export default req => {
     name,
     method,
     kind,
+    desc,
     id
   } = req.body
   switch(type) {
     case 'save':
-      return DB.save({name, method, kind}).then( _data => {
+      return DB.save({name, method, kind, desc}).then( _data => {
         return {
           data: _data.ops[0]
         }
@@ -22,7 +23,7 @@ export default req => {
         }
       })
     case 'update':
-      return DB.update({id, method, kind}).then(_data => {
+      return DB.update({id, method, kind, desc}).then(_data => {
         return {
           data: _data
         }

@@ -11,7 +11,6 @@ export default {
         let id = 0
         // 实现自增id，查询最后一个，然后把id+1
         collection.find({}).toArray((searchErr, result) => {
-          // console.log(result)
           if (result.length) {
             id = result[result.length - 1].id + 1
           }

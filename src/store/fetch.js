@@ -1,4 +1,4 @@
-import {pageType, pageInfo, apiInfo} from '../../routes/api'
+import {pageType, pageInfo, apiInfo, apiCodeInfo} from '../../routes/api'
 
 const headers = {
   Accept: 'application/json',
@@ -32,6 +32,14 @@ export const FETCH_PAGEINFO = async data => {
 
 export const FETCH_APIINFO = async data => {
   return await fetch(apiInfo, {
+    method: 'post',
+    headers: headers,
+    body: JSON.stringify(data),
+  }).then(response => response.json())
+}
+
+export const FETCH_APICODEINFO = async data => {
+  return await fetch(apiCodeInfo, {
     method: 'post',
     headers: headers,
     body: JSON.stringify(data),

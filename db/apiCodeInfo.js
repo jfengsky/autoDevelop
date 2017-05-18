@@ -1,17 +1,9 @@
 import { MongoClient, URL } from './dbConfig'
 
-const colName = 'apiInfo'
-
-// const wrap = () => (
-//   new Promise( (resolve, reject) => {
-//     MongoClient.connect(URL, (err, db) => {
-//       const collection = db.collection(colName)
-//     })
-//   })
-// )
+const colName = 'apiCodeInfo'
 
 export default {
-  save({ name, method, kind, desc }) {
+  save({ name, pageType, kind, desc }) {
     return new Promise((resolve, reject) => {
       MongoClient.connect(URL, (err, db) => {
         const collection = db.collection(colName)
@@ -20,7 +12,7 @@ export default {
           if (result.length) {
             id = result[result.length - 1].id + 1
           }
-          collection.insert({ name, id, kind, method, desc, time: new Date().getTime() }, (inerr, docs) => {
+          collection.insert({ name, id, kind, pageType, desc, time: new Date().getTime() }, (inerr, docs) => {
             resolve(docs)
             db.close()
           })
@@ -47,7 +39,7 @@ export default {
       })
     })
   },
-  update({id, method, kind, desc}) {
+  update({id, desc}) {
     return new Promise( (resolve,reject) => {
       MongoClient.connect(URL, (err, db) => {
         const collection = db.collection(colName)
@@ -55,7 +47,7 @@ export default {
         if(id >= 0){
           where = {id: id - 0}
         }
-        collection.update(where,{$set:{kind,method, desc}}, (inerr, docs) => {
+        collection.update(where,{$set:{desc}}, (inerr, docs) => {
           resolve(docs)
           db.close()
         })
