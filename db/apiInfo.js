@@ -61,5 +61,16 @@ export default {
         })
       })
     })
+  },
+  delete({id}){
+    return new Promise( (resolve,reject) => {
+      MongoClient.connect(URL, (err, db) => {
+        const collection = db.collection(colName)
+        collection.remove({id}, (inerr, docs) => {
+          resolve(docs)
+          db.close()
+        })
+      })
+    })
   }
 }

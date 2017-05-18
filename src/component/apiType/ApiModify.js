@@ -22,7 +22,11 @@ class CreateApiType extends Component {
       isUpdata,
       type,
       method,
+      errorMessage,
     } = this.state;
+    if (name) {
+      errorMessage = '';
+    }
     return (
       <div>
         <h5 className="modal-title">创建接口类型</h5>
@@ -99,15 +103,24 @@ class CreateApiType extends Component {
               >
                 编辑
               </button>}
+            {isUpdata &&
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={this.handlerClickDeleteApiType}
+                style={{marginLeft: 20}}
+              >
+                删除
+              </button>}
           </div>
         </div>
         <div className="row" style={{marginTop: 10}}>
           <div
             className="col-xs-12"
-            style={{display: this.state.errorMessage ? 'block' : 'none'}}
+            style={{display: errorMessage ? 'block' : 'none'}}
           >
             <div className="alert alert-danger" role="alert">
-              {this.state.errorMessage}
+              {errorMessage}
             </div>
           </div>
         </div>
@@ -154,9 +167,18 @@ class CreateApiType extends Component {
         kind: type,
         id,
       }).then(_data => {
-        window.reload();
+        window.location.reload();
       });
     }
+  };
+
+  handlerClickDeleteApiType = e => {
+    FETCH_APIINFO({
+      type: 'delete',
+      id: this.state.id,
+    }).then(_data => {
+      window.location.reload();
+    });
   };
 }
 

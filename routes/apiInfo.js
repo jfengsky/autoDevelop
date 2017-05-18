@@ -27,5 +27,11 @@ export default req => {
           data: _data
         }
       })
+    case 'delete':
+      return DB.delete({id}).then(_data => {
+        return {
+          data: _data
+        }
+      })
   }
 }
