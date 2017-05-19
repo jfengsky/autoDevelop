@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 22);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,6 +74,12 @@ module.exports = require("react");
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("babel-runtime/regenerator");
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84,7 +90,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FETCH_APICODEINFO = exports.FETCH_APIINFO = exports.FETCH_PAGEINFO = exports.FETCH_PAGETYPE = undefined;
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -233,12 +239,6 @@ var FETCH_APICODEINFO = exports.FETCH_APICODEINFO = function () {
 }();
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = require("babel-runtime/regenerator");
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports) {
 
@@ -246,12 +246,6 @@ module.exports = require("react-redux");
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-router-dom");
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -262,7 +256,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.URL = exports.MongoClient = undefined;
 
-var _mongodb = __webpack_require__(44);
+var _mongodb = __webpack_require__(48);
 
 var _mongodb2 = _interopRequireDefault(_mongodb);
 
@@ -270,6 +264,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var MongoClient = exports.MongoClient = _mongodb2.default.MongoClient;
 var URL = exports.URL = 'mongodb://localhost:27017/autoDevelopData';
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router-dom");
 
 /***/ }),
 /* 6 */
@@ -307,6 +307,18 @@ var apiList = exports.apiList = [apiInfo, pageType, pageInfo, apiCodeInfo];
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -325,7 +337,7 @@ var clientEntry = exports.clientEntry = {
 var clientPort = exports.clientPort = 3200;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -335,7 +347,135 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _apiInfo = __webpack_require__(20);
+var _regenerator = __webpack_require__(1);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _apiCodeInfo = __webpack_require__(23);
+
+var _apiCodeInfo2 = _interopRequireDefault(_apiCodeInfo);
+
+var _fsApiCode = __webpack_require__(25);
+
+var _fsApiCode2 = _interopRequireDefault(_fsApiCode);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+exports.default = function (req) {
+  var _req$body = req.body,
+      type = _req$body.type,
+      pageType = _req$body.pageType,
+      kind = _req$body.kind,
+      desc = _req$body.desc,
+      code = _req$body.code,
+      id = _req$body.id,
+      name = _req$body.name;
+
+  switch (type) {
+    case 'save':
+      return _fsApiCode2.default.write({ code: code }).then(function () {
+        var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(_data) {
+          return _regenerator2.default.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return _apiCodeInfo2.default.save({ name: _data.name, pageType: pageType, kind: kind, desc: desc }).then(function (result) {
+                    return {
+                      data: result.ops[0]
+                    };
+                  });
+
+                case 2:
+                  return _context.abrupt('return', _context.sent);
+
+                case 3:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, undefined);
+        }));
+
+        return function (_x) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+
+    case 'search':
+      return _apiCodeInfo2.default.search({ id: id }).then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+    case 'searchfile':
+      return _apiCodeInfo2.default.search({ id: id }).then(function () {
+        var _ref2 = _asyncToGenerator(_regenerator2.default.mark(function _callee2(_data) {
+          var tempData;
+          return _regenerator2.default.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  tempData = _data[0];
+                  _context2.next = 3;
+                  return _fsApiCode2.default.read({
+                    name: tempData.name
+                  }).then(function (result) {
+                    return {
+                      data: _extends({}, tempData, {
+                        code: result
+                      })
+                    };
+                  });
+
+                case 3:
+                  return _context2.abrupt('return', _context2.sent);
+
+                case 4:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, undefined);
+        }));
+
+        return function (_x2) {
+          return _ref2.apply(this, arguments);
+        };
+      }());
+    case 'update':
+      return _fsApiCode2.default.write({ name: name, code: code }).then(function (result) {
+        return _apiCodeInfo2.default.update({ id: id, desc: desc }).then(function (_data) {
+          return {
+            data: _data
+          };
+        });
+      });
+    case 'delete':
+      return _apiCodeInfo2.default.delete({ id: id }).then(function (_data) {
+        return {
+          data: _data
+        };
+      });
+  }
+};
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _apiInfo = __webpack_require__(24);
 
 var _apiInfo2 = _interopRequireDefault(_apiInfo);
 
@@ -379,7 +519,7 @@ exports.default = function (req) {
 };
 
 /***/ }),
-/* 9 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -389,17 +529,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _pageInfo = __webpack_require__(22);
+var _pageInfo = __webpack_require__(27);
 
 var _pageInfo2 = _interopRequireDefault(_pageInfo);
 
-var _fsPageInfo = __webpack_require__(21);
+var _fsPageInfo = __webpack_require__(26);
 
 var _fsPageInfo2 = _interopRequireDefault(_fsPageInfo);
 
@@ -540,7 +680,7 @@ exports.default = function (req) {
 };
 
 /***/ }),
-/* 10 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -550,7 +690,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _pageType = __webpack_require__(23);
+var _pageType = __webpack_require__(28);
 
 var _pageType2 = _interopRequireDefault(_pageType);
 
@@ -589,7 +729,7 @@ exports.default = function (req) {
 };
 
 /***/ }),
-/* 11 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -603,21 +743,21 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(4);
+var _reactRouterDom = __webpack_require__(5);
 
-var _Menu = __webpack_require__(32);
+var _Menu = __webpack_require__(37);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _Home = __webpack_require__(28);
+var _Home = __webpack_require__(33);
 
 var _Home2 = _interopRequireDefault(_Home);
 
-var _Api = __webpack_require__(26);
+var _Api = __webpack_require__(31);
 
 var _Api2 = _interopRequireDefault(_Api);
 
-var _Modify = __webpack_require__(30);
+var _Modify = __webpack_require__(35);
 
 var _Modify2 = _interopRequireDefault(_Modify);
 
@@ -638,7 +778,7 @@ var App = function App(props) {
 exports.default = App;
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -653,7 +793,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -668,43 +808,43 @@ exports.default = function (props) {
 };
 
 /***/ }),
-/* 14 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 15 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = require("express");
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("multer");
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-router");
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -712,51 +852,51 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(17);
+var _server = __webpack_require__(20);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouter = __webpack_require__(18);
+var _reactRouter = __webpack_require__(21);
 
-var _express = __webpack_require__(15);
+var _express = __webpack_require__(18);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _bodyParser = __webpack_require__(14);
+var _bodyParser = __webpack_require__(17);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _multer = __webpack_require__(16);
+var _multer = __webpack_require__(19);
 
 var _multer2 = _interopRequireDefault(_multer);
 
-var _layout = __webpack_require__(13);
+var _layout = __webpack_require__(16);
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _App = __webpack_require__(11);
+var _App = __webpack_require__(14);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _initialState = __webpack_require__(12);
+var _initialState = __webpack_require__(15);
 
 var _initialState2 = _interopRequireDefault(_initialState);
 
-var _client = __webpack_require__(7);
+var _client = __webpack_require__(9);
 
-var _pageType = __webpack_require__(10);
+var _pageType = __webpack_require__(13);
 
 var _pageType2 = _interopRequireDefault(_pageType);
 
-var _pageInfo = __webpack_require__(9);
+var _pageInfo = __webpack_require__(12);
 
 var _pageInfo2 = _interopRequireDefault(_pageInfo);
 
-var _apiInfo = __webpack_require__(8);
+var _apiInfo = __webpack_require__(11);
 
 var _apiInfo2 = _interopRequireDefault(_apiInfo);
 
-var _apiCodeInfo = __webpack_require__(48);
+var _apiCodeInfo = __webpack_require__(10);
 
 var _apiCodeInfo2 = _interopRequireDefault(_apiCodeInfo);
 
@@ -769,9 +909,8 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 var app = (0, _express2.default)();
 var upload = (0, _multer2.default)();
 
-app.use(_bodyParser2.default.json());
+app.use(_bodyParser2.default.json({ limit: '50mb' }));
 app.use(_bodyParser2.default.urlencoded({ extended: true }));
-
 app.use('/static', _express2.default.static('./dist'));
 app.use(_express2.default.static('./public'));
 app.use('/static', _express2.default.static('./node_modules'));
@@ -881,7 +1020,7 @@ app.listen(_client.clientPort, function () {
 });
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -891,7 +1030,99 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _dbConfig = __webpack_require__(5);
+var _dbConfig = __webpack_require__(4);
+
+var colName = 'apiCodeInfo';
+
+exports.default = {
+  save: function save(_ref) {
+    var name = _ref.name,
+        pageType = _ref.pageType,
+        kind = _ref.kind,
+        desc = _ref.desc;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var id = 0;
+        collection.find({}).toArray(function (searchErr, result) {
+          if (result.length) {
+            id = result[result.length - 1].id + 1;
+          }
+          collection.insert({ name: name, id: id, kind: kind, pageType: pageType, desc: desc, time: new Date().getTime() }, function (inerr, docs) {
+            resolve(docs);
+            db.close();
+          });
+        });
+      });
+    });
+  },
+  search: function search(_ref2) {
+    var id = _ref2.id;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        collection.find(where).toArray(function (searchErr, result) {
+          if (searchErr) {
+            reject('search error');
+          } else {
+            resolve(result);
+          }
+          db.close();
+        });
+      });
+    });
+  },
+  update: function update(_ref3) {
+    var id = _ref3.id,
+        desc = _ref3.desc;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        var where = {};
+        if (id >= 0) {
+          where = { id: id - 0 };
+        }
+        collection.update(where, { $set: { desc: desc } }, function (inerr, docs) {
+          resolve(docs);
+          db.close();
+        });
+      });
+    });
+  },
+  delete: function _delete(_ref4) {
+    var id = _ref4.id;
+
+    return new Promise(function (resolve, reject) {
+      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
+        var collection = db.collection(colName);
+        collection.remove({ id: id }, function (inerr, docs) {
+          resolve(docs);
+          db.close();
+        });
+      });
+    });
+  }
+};
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _dbConfig = __webpack_require__(4);
 
 var colName = 'apiInfo';
 
@@ -983,7 +1214,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -993,11 +1224,64 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _fs = __webpack_require__(43);
+var _fs = __webpack_require__(7);
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _path = __webpack_require__(45);
+var _path = __webpack_require__(8);
+
+var _path2 = _interopRequireDefault(_path);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var file = {
+    read: function read(_ref) {
+        var name = _ref.name;
+
+        return new Promise(function (resolve, reject) {
+            _fs2.default.readFile('./public/apis/' + name + '.json', 'utf-8', function (err, data) {
+                resolve(data);
+            });
+        });
+    },
+    write: function write(_ref2) {
+        var name = _ref2.name,
+            code = _ref2.code;
+
+        // 随机生成一个英文名，这里用时间毫秒
+        if (!name) {
+            name = 'api' + new Date().getTime();
+        }
+        return new Promise(function (resolve, reject) {
+            _fs2.default.writeFile('./public/apis/' + name + '.json', decodeURIComponent(code), 'utf-8', function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve({ name: name });
+                }
+            });
+        });
+    }
+};
+
+exports.default = file;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _fs = __webpack_require__(7);
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = __webpack_require__(8);
 
 var _path2 = _interopRequireDefault(_path);
 
@@ -1032,7 +1316,7 @@ var file = {
 exports.default = file;
 
 /***/ }),
-/* 22 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1042,7 +1326,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _dbConfig = __webpack_require__(5);
+var _dbConfig = __webpack_require__(4);
 
 var colName = 'pageInfo';
 
@@ -1132,7 +1416,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 23 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1142,7 +1426,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _dbConfig = __webpack_require__(5);
+var _dbConfig = __webpack_require__(4);
 
 var colName = 'pageType';
 
@@ -1203,7 +1487,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 24 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1222,7 +1506,7 @@ var update_apiType = exports.update_apiType = function update_apiType(value) {
 };
 
 /***/ }),
-/* 25 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1257,7 +1541,7 @@ var delete_pageType = exports.delete_pageType = function delete_pageType(value) 
 };
 
 /***/ }),
-/* 26 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1271,17 +1555,17 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(4);
+var _reactRouterDom = __webpack_require__(5);
 
-var _ApiList = __webpack_require__(34);
+var _ApiList = __webpack_require__(39);
 
 var _ApiList2 = _interopRequireDefault(_ApiList);
 
-var _CreateApi = __webpack_require__(37);
+var _CreateApi = __webpack_require__(42);
 
 var _CreateApi2 = _interopRequireDefault(_CreateApi);
 
-var _ApiModify = __webpack_require__(35);
+var _ApiModify = __webpack_require__(40);
 
 var _ApiModify2 = _interopRequireDefault(_ApiModify);
 
@@ -1318,7 +1602,7 @@ Api.propTypes = {};
 exports.default = Api;
 
 /***/ }),
-/* 27 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1328,7 +1612,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -1338,13 +1622,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
-var _Select = __webpack_require__(31);
+var _Select = __webpack_require__(36);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _InputText = __webpack_require__(29);
+var _InputText = __webpack_require__(34);
 
 var _InputText2 = _interopRequireDefault(_InputText);
 
@@ -1518,7 +1802,7 @@ EditPageType.propTypes = {};
 exports.default = EditPageType;
 
 /***/ }),
-/* 28 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1532,17 +1816,17 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(4);
+var _reactRouterDom = __webpack_require__(5);
 
-var _CreatePage = __webpack_require__(39);
+var _CreatePage = __webpack_require__(44);
 
 var _CreatePage2 = _interopRequireDefault(_CreatePage);
 
-var _Modify = __webpack_require__(40);
+var _Modify = __webpack_require__(45);
 
 var _Modify2 = _interopRequireDefault(_Modify);
 
-var _pageLis = __webpack_require__(38);
+var _pageLis = __webpack_require__(43);
 
 var _pageLis2 = _interopRequireDefault(_pageLis);
 
@@ -1589,7 +1873,7 @@ var Home = function Home(_ref3) {
 exports.default = Home;
 
 /***/ }),
-/* 29 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1660,7 +1944,7 @@ exports.default = InputText;
 InputText.propTypes = {};
 
 /***/ }),
-/* 30 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1712,7 +1996,7 @@ Modify.propTypes = {};
 exports.default = Modify;
 
 /***/ }),
-/* 31 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1828,7 +2112,7 @@ Select.propTypes = {};
 exports.default = Select;
 
 /***/ }),
-/* 32 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1846,23 +2130,23 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(4);
+var _reactRouterDom = __webpack_require__(5);
 
 var _reactRedux = __webpack_require__(3);
 
-var _Search = __webpack_require__(33);
+var _Search = __webpack_require__(38);
 
 var _Search2 = _interopRequireDefault(_Search);
 
-var _modal = __webpack_require__(41);
+var _modal = __webpack_require__(46);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _pageType = __webpack_require__(25);
+var _pageType = __webpack_require__(30);
 
-var _apiType = __webpack_require__(24);
+var _apiType = __webpack_require__(29);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2057,7 +2341,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Menu);
 
 /***/ }),
-/* 33 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2115,7 +2399,7 @@ exports.default = Search;
 Search.propTypes = {};
 
 /***/ }),
-/* 34 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2214,7 +2498,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(ApiList);
 
 /***/ }),
-/* 35 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2234,11 +2518,11 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(3);
 
-var _ApiTypeList = __webpack_require__(36);
+var _ApiTypeList = __webpack_require__(41);
 
 var _ApiTypeList2 = _interopRequireDefault(_ApiTypeList);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2517,7 +2801,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(CreateApiType);
 
 /***/ }),
-/* 36 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2533,9 +2817,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
-var _filter = __webpack_require__(42);
+var _filter = __webpack_require__(47);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2692,7 +2976,7 @@ ApiTypeList.propTypes = {};
 exports.default = ApiTypeList;
 
 /***/ }),
-/* 37 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2702,7 +2986,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -2716,7 +3000,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(3);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3019,7 +3303,7 @@ var mapStateToProps = function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(CreateApi);
 
 /***/ }),
-/* 38 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3037,7 +3321,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(3);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3209,7 +3493,7 @@ var mapStateToProps = function mapStateToProps(state, ownProps) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(PageList);
 
 /***/ }),
-/* 39 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3219,7 +3503,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -3231,7 +3515,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(3);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3262,7 +3546,7 @@ var CreagePage = function (_Component) {
       var name = pageName.value;
       var kind = pageType.value - 0;
       var desc = pageDesc.value;
-      var code = pageCode.value;
+      var code = encodeURI(pageCode.value);
 
       var changeType = 'save';
       if (id >= 0) {
@@ -3544,7 +3828,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CreagePage);
 
 /***/ }),
-/* 40 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3554,7 +3838,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(2);
+var _regenerator = __webpack_require__(1);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -3566,7 +3850,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(3);
 
-var _fetch = __webpack_require__(1);
+var _fetch = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3841,7 +4125,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ModifyPageType);
 
 /***/ }),
-/* 41 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3855,11 +4139,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(46);
+var _reactDom = __webpack_require__(49);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _EditPageType = __webpack_require__(27);
+var _EditPageType = __webpack_require__(32);
 
 var _EditPageType2 = _interopRequireDefault(_EditPageType);
 
@@ -3888,7 +4172,7 @@ var modal = function modal(props) {
 exports.default = modal;
 
 /***/ }),
-/* 42 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3905,302 +4189,16 @@ var getPageTypeName = exports.getPageTypeName = function getPageTypeName(typeLis
 };
 
 /***/ }),
-/* 43 */
-/***/ (function(module, exports) {
-
-module.exports = require("fs");
-
-/***/ }),
-/* 44 */
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongodb");
 
 /***/ }),
-/* 45 */
-/***/ (function(module, exports) {
-
-module.exports = require("path");
-
-/***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom");
-
-/***/ }),
-/* 47 */,
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _regenerator = __webpack_require__(2);
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _apiCodeInfo = __webpack_require__(49);
-
-var _apiCodeInfo2 = _interopRequireDefault(_apiCodeInfo);
-
-var _fsApiCode = __webpack_require__(50);
-
-var _fsApiCode2 = _interopRequireDefault(_fsApiCode);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-exports.default = function (req) {
-  var _req$body = req.body,
-      type = _req$body.type,
-      pageType = _req$body.pageType,
-      kind = _req$body.kind,
-      desc = _req$body.desc,
-      code = _req$body.code,
-      id = _req$body.id,
-      name = _req$body.name;
-
-  switch (type) {
-    case 'save':
-      return _fsApiCode2.default.write({ code: code }).then(function () {
-        var _ref = _asyncToGenerator(_regenerator2.default.mark(function _callee(_data) {
-          return _regenerator2.default.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.next = 2;
-                  return _apiCodeInfo2.default.save({ name: _data.name, pageType: pageType, kind: kind, desc: desc }).then(function (result) {
-                    return {
-                      data: result.ops[0]
-                    };
-                  });
-
-                case 2:
-                  return _context.abrupt('return', _context.sent);
-
-                case 3:
-                case 'end':
-                  return _context.stop();
-              }
-            }
-          }, _callee, undefined);
-        }));
-
-        return function (_x) {
-          return _ref.apply(this, arguments);
-        };
-      }());
-
-    case 'search':
-      return _apiCodeInfo2.default.search({ id: id }).then(function (_data) {
-        return {
-          data: _data
-        };
-      });
-    case 'searchfile':
-      return _apiCodeInfo2.default.search({ id: id }).then(function () {
-        var _ref2 = _asyncToGenerator(_regenerator2.default.mark(function _callee2(_data) {
-          var tempData;
-          return _regenerator2.default.wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  tempData = _data[0];
-                  _context2.next = 3;
-                  return _fsApiCode2.default.read({
-                    name: tempData.name
-                  }).then(function (result) {
-                    return {
-                      data: _extends({}, tempData, {
-                        code: result
-                      })
-                    };
-                  });
-
-                case 3:
-                  return _context2.abrupt('return', _context2.sent);
-
-                case 4:
-                case 'end':
-                  return _context2.stop();
-              }
-            }
-          }, _callee2, undefined);
-        }));
-
-        return function (_x2) {
-          return _ref2.apply(this, arguments);
-        };
-      }());
-    case 'update':
-      return _fsApiCode2.default.write({ name: name, code: code }).then(function (result) {
-        return _apiCodeInfo2.default.update({ id: id, desc: desc }).then(function (_data) {
-          return {
-            data: _data
-          };
-        });
-      });
-    case 'delete':
-      return _apiCodeInfo2.default.delete({ id: id }).then(function (_data) {
-        return {
-          data: _data
-        };
-      });
-  }
-};
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _dbConfig = __webpack_require__(5);
-
-var colName = 'apiCodeInfo';
-
-exports.default = {
-  save: function save(_ref) {
-    var name = _ref.name,
-        pageType = _ref.pageType,
-        kind = _ref.kind,
-        desc = _ref.desc;
-
-    return new Promise(function (resolve, reject) {
-      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
-        var collection = db.collection(colName);
-        var id = 0;
-        collection.find({}).toArray(function (searchErr, result) {
-          if (result.length) {
-            id = result[result.length - 1].id + 1;
-          }
-          collection.insert({ name: name, id: id, kind: kind, pageType: pageType, desc: desc, time: new Date().getTime() }, function (inerr, docs) {
-            resolve(docs);
-            db.close();
-          });
-        });
-      });
-    });
-  },
-  search: function search(_ref2) {
-    var id = _ref2.id;
-
-    return new Promise(function (resolve, reject) {
-      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
-        var collection = db.collection(colName);
-        var where = {};
-        if (id >= 0) {
-          where = { id: id - 0 };
-        }
-        collection.find(where).toArray(function (searchErr, result) {
-          if (searchErr) {
-            reject('search error');
-          } else {
-            resolve(result);
-          }
-          db.close();
-        });
-      });
-    });
-  },
-  update: function update(_ref3) {
-    var id = _ref3.id,
-        desc = _ref3.desc;
-
-    return new Promise(function (resolve, reject) {
-      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
-        var collection = db.collection(colName);
-        var where = {};
-        if (id >= 0) {
-          where = { id: id - 0 };
-        }
-        collection.update(where, { $set: { desc: desc } }, function (inerr, docs) {
-          resolve(docs);
-          db.close();
-        });
-      });
-    });
-  },
-  delete: function _delete(_ref4) {
-    var id = _ref4.id;
-
-    return new Promise(function (resolve, reject) {
-      _dbConfig.MongoClient.connect(_dbConfig.URL, function (err, db) {
-        var collection = db.collection(colName);
-        collection.remove({ id: id }, function (inerr, docs) {
-          resolve(docs);
-          db.close();
-        });
-      });
-    });
-  }
-};
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _fs = __webpack_require__(43);
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _path = __webpack_require__(45);
-
-var _path2 = _interopRequireDefault(_path);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var file = {
-    read: function read(_ref) {
-        var name = _ref.name;
-
-        return new Promise(function (resolve, reject) {
-            _fs2.default.readFile('./public/apis/' + name + '.json', 'utf-8', function (err, data) {
-                resolve(data);
-            });
-        });
-    },
-    write: function write(_ref2) {
-        var name = _ref2.name,
-            code = _ref2.code;
-
-        // 随机生成一个英文名，这里用时间毫秒
-        if (!name) {
-            name = 'api' + new Date().getTime();
-        }
-        return new Promise(function (resolve, reject) {
-            _fs2.default.writeFile('./public/apis/' + name + '.json', decodeURIComponent(code), 'utf-8', function (err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({ name: name });
-                }
-            });
-        });
-    }
-};
-
-exports.default = file;
 
 /***/ })
 /******/ ]);

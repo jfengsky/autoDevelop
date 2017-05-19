@@ -154,7 +154,7 @@ class CreagePage extends Component {
     let name = pageName.value;
     let kind = pageType.value - 0;
     let desc = pageDesc.value;
-    let code = pageCode.value;
+    let code = encodeURI(pageCode.value);
 
     let changeType = 'save';
     if (id >= 0) {
