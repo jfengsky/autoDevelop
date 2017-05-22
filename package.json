@@ -14,7 +14,8 @@
     "watchClient": "webpack --config build/webpack.config.client.babel.js --progress --colors --watch",
     "watchServer": "webpack --config build/webpack.config.server.babel.js --progress --colors --watch",
     "prettier-code": "lint-staged",
-    "pushpkg": "git add -A && git commit -m auto-pkg && git push origin master"
+    "pushpkg": "git add -A && git commit -m auto-pkg && git push origin master",
+    "test": "./node_modules/mocha/bin/mocha --compilers js:babel-core/register"
   },
   "lint-staged": {
     "linters": {
@@ -50,6 +51,7 @@
     "express-react-views": "^0.10.2",
     "fetch-ie8": "^1.5.0",
     "lint-staged": "^3.4.0",
+    "mocha": "^3.4.1",
     "mongodb": "^2.2.26",
     "multer": "^1.3.0",
     "pre-commit": "^1.2.2",
